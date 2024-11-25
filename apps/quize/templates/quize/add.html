@@ -1,0 +1,221 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="nk-content-wrap">
+  <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-between">
+      <div class="nk-block-head-content">
+        <h3 class="nk-block-title page-title">Quize Add</h3>
+        <div class="nk-block-des text-soft">
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nk-block">
+    <div class="card card-bordered">
+      <div class="card-inner">
+        <div class="card-head">
+          <h5 class="card-title">Basic Information</h5>
+        </div>
+        <form action="#">
+          <div class="row g-4">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="form-label" for="full-name-1">Title</label>
+                <div class="form-control-wrap">
+                  <input type="text" class="form-control" id="full-name-1" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="form-label" for="phone-no-1">Description</label>
+                <textarea
+                  class="form-control no-resize"
+                  id="default-textarea"
+                  spellcheck="false"
+                >
+                </textarea>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <button type="submit" class="btn btn-lg btn-primary">
+                  Save Informations
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="nk-block nk-block-lg">
+    <div class="card card-bordered">
+      <div class="row g-0 col-sep col-sep-md col-sep-xl">
+        <div class="col-md-4 col-xl-4">
+          <div class="card-inner">
+            <ul class="nk-stepper-nav nk-stepper-nav-s1 stepper-nav is-vr">
+              <li class="current">
+                <div class="step-item">
+                  <div class="step-text">
+                    <div class="lead-text">Question 1</div>
+                    <div class="sub-text">How are u?</div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="step-item">
+                  <div class="step-text">
+                    <div class="lead-text">Project Template</div>
+                    <div class="sub-text">Define Project Manage Style</div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <a href="#" class="btn btn-primary"
+                  ><em class="icon ni ni-plus"></em><span>Add Question</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-8 col-xl-8">
+          <div class="card-inner">
+            <div class="nk-stepper-content">
+              <div class="nk-stepper-steps stepper-steps">
+                <div class="nk-stepper-step active">
+                  <h5 class="title mb-3">Question 1</h5>
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="form-label" for="cp1-project-name"
+                          >Question</label
+                        >
+                        <div class="form-control-wrap">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="cp1-project-name"
+                            name="cp1-project-name"
+                            required=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="form-label" for="cp1-project-description"
+                          >Project Description</label
+                        >
+                        <div class="form-control-wrap">
+                          <textarea
+                            class="form-control form-control-sm"
+                            id="cp1-project-description"
+                            name="cp1-project-description"
+                            placeholder="Write Project Description"
+                            required=""
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="form-label">Question Type</label>
+                        <div class="form-control-wrap">
+                          <select
+                            class="form-select js-select2 select2-hidden-accessible"
+                            data-select2-id="3"
+                            tabindex="-1"
+                            aria-hidden="true"
+                          >
+                            <option value="default_option" data-select2-id="5">
+                              Default Option
+                            </option>
+                            <option
+                              value="option_select_name"
+                              data-select2-id="27"
+                            >
+                              Option select name
+                            </option>
+                            <option
+                              value="option_select_name"
+                              data-select2-id="28"
+                            >
+                              Option select name
+                            </option></select
+                          >
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="form-label">Project Type</label>
+                        <div class="form-control-wrap">
+                          <ul class="custom-control-group">
+                            <li>
+                              <div class="custom-control custom-radio">
+                                <input
+                                  type="radio"
+                                  class="custom-control-input"
+                                  name="cp1-project-type"
+                                  id="cp1-public-project"
+                                  value="public_project"
+                                  required=""
+                                /><label
+                                  class="custom-control-label"
+                                  for="cp1-public-project"
+                                  >Public Project</label
+                                >
+                              </div>
+                            </li>
+                            <li>
+                              <div class="custom-control custom-radio">
+                                <input
+                                  type="radio"
+                                  class="custom-control-input"
+                                  name="cp1-project-type"
+                                  id="cp1-private-project"
+                                  value="private_project"
+                                  required=""
+                                /><label
+                                  class="custom-control-label"
+                                  for="cp1-private-project"
+                                  >Private Project</label
+                                >
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ul
+                class="nk-stepper-pagination pt-4 gx-4 gy-2 stepper-pagination"
+              >
+                <li class="step-prev" style="display: none">
+                  <button class="btn btn-dim btn-primary">Prev</button>
+                </li>
+                <li class="step-next" style="display: block">
+                  <button class="btn btn-primary">Save</button>
+                </li>
+                <li class="step-submit" style="display: none">
+                  <button class="btn btn-primary">Submit</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
