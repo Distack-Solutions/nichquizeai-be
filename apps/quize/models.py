@@ -1,9 +1,6 @@
 from django.db import models
 import uuid
-
 # Create your models here.
-
-
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -16,7 +13,8 @@ class Quiz(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    # created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quizzes')
+    category = models.CharField(max_length=255, null=True, blank=True, default="Productivity Quiz")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -24,41 +22,93 @@ class Quiz(models.Model):
         return self.title
 
 
+
+
 class Question(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, unique=True
-    )
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
-    text = models.TextField()
-    question_type = models.CharField(
-        max_length=20,
-        choices=[
-            ("multiple_choice", "Multiple Choice"),
-            ("text", "Text"),
-        ],
-        default="text",
+    TEXT = 'text'
+    NUMBER = 'number'
+    CHECKBOXES = 'checkboxes'
+    RADIO = 'radio'
+
+    QUESTION_TYPES = [
+        (TEXT, 'Text'),
+        (NUMBER, 'Number'),
+        (CHECKBOXES, 'Checkboxes'),
+        (RADIO, 'Radio'),
+    ]
+
+    question_text = models.TextField()
+    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default=TEXT)
+    quiz = models.ForeignKey(
+        'Quiz',
+        on_delete=models.CASCADE,
+        related_name='questions'
     )
 
     def __str__(self):
-        return f"Question: {self.text} ({self.quiz.title})"
+        return self.question_text
 
 
-class Answer(models.Model):
+class QuestionOption(models.Model):
+    text = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='question_options/', blank=True, null=True)
     question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, related_name="choices"
+        'Question',
+        on_delete=models.CASCADE,
+        related_name='options'
     )
-    text = models.TextField()
-    is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Choice: {self.text} (Correct: {self.is_correct})"
+        return self.text
 
 
-class Submission(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="submissions")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submissions")
-    email = models.EmailField()
-    submitted_at = models.DateTimeField(auto_now_add=True)
+class Respondent(models.Model):
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
 
     def __str__(self):
-        return f"Submission by {self.user.email} for {self.quiz.title}"
+        return self.full_name
+
+
+class Attempt(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    quiz = models.ForeignKey(
+        'Quiz',
+        on_delete=models.CASCADE,
+        related_name='attempts'
+    )
+    respondent = models.ForeignKey(
+        'Respondent',
+        on_delete=models.CASCADE,
+        related_name='attempts'
+    )
+
+    def __str__(self):
+        return f"Attempt by {self.respondent} on {self.quiz}"
+
+
+class Response(models.Model):
+    answer = models.TextField(blank=True, null=True)
+    selected_option = models.ManyToManyField(
+        'QuestionOption',
+        blank=True
+    )
+    question = models.ForeignKey(
+        'Question',
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    attempt = models.ForeignKey(
+        'Attempt',
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+
+    # def clean(self):
+    #     from django.core.exceptions import ValidationError
+
+    #     if not self.answer and not self.selected_option.exists():
+    #         raise ValidationError("Either 'answer' or 'selected_option' must be provided.")
+
+    def __str__(self):
+        return f"Response for {self.question} in {self.attempt}"

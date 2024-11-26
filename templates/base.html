@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static "assets/css/dashlitee1e3.css" %}">
     <link id="skin-default" rel="stylesheet" href="{% static "assets/css/themee1e3.css" %}">   
     <link id="skin-default" rel="stylesheet" href="{% static "assets/css/theme-green.css" %}">   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body class="nk-body bg-white npc-default has-aside ">
@@ -183,6 +184,12 @@
                                             class="nk-menu-icon"><em
                                                 class="icon ni ni-card-view"></em></span><span
                                             class="nk-menu-text">Quiz</span></a></li>
+
+
+                                            <li class="nk-menu-item"><a href="{% url 'quize_list' %}" class="nk-menu-link"><span
+                                                class="nk-menu-icon"><em
+                                                    class="icon ni ni-card-view"></em></span><span
+                                                class="nk-menu-text">Quiz</span></a></li>
                                     </ul>
                                 </div>
                                 <div class="nk-aside-close"><a href="#" class="toggle" data-target="sideNav"><em
