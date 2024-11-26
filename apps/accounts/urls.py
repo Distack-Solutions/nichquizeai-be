@@ -18,5 +18,5 @@ urlpatterns = [
         name="signup",
     ),
     path("logout/", views.logout_view, name="logout"),
-    path("test/", views.test, name="test"),
+    path("test/<uuid:id>/", views.test, name="test"),
 ]

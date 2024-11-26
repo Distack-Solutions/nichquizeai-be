@@ -1,0 +1,36 @@
+{% load static %}
+<div>
+  <!-- Logo -->
+  <div class="my-5 container">
+    <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+    width="200" height="60" class="img-fluid" />
+  </div>
+  <div class="min-vh-90 container w-50 px-3 py-4">
+    <!-- Progress Steps -->
+    {% include "./progress.html" %}
+
+    <!-- Question -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between">
+        <h1 class="fs-4 fw-bold" x-text="item.title">
+          How do you usually feel after meals?
+        </h1>
+        <span class="text-danger fs-6">(Required)</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      
+      <textarea
+        class="form-control"
+        id="exampleTextarea"
+        rows="4"
+        placeholder="Enter your text here..."
+        @keyup="set_answer($event.target.value)"
+      ></textarea>
+    </div>
+
+    <!--cta-->
+    {% include "./cta.html" %}
+  </div>
+</div>

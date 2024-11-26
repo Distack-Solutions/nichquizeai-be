@@ -13,6 +13,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
     />
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"
+      defer
+    ></script>
     <style>
       /* Container Styling */
       .health-goals-container {
@@ -77,290 +81,103 @@
   </head>
 
   <body>
-    {% if active_id == 1 %}
-    <div
-      class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
-    >
-      <!-- Logo -->
-      <div class="mb-4">
-        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
-        width="200" height="60" class="img-fluid" />
-      </div>
-
-      <!-- Progress Steps -->
-      <div
-        class="d-flex justify-content-center align-items-center mb-4 w-100"
-        style="max-width: 300px"
-      >
-        <div class="d-flex align-items-center">
-          <div
-            class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
-            style="width: 2rem; height: 2rem"
-          >
-            1
-          </div>
-          <div class="bg-success" style="width: 3rem; height: 2px"></div>
-        </div>
-        <div class="d-flex align-items-center">
-          <div
-            class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-            style="width: 2rem; height: 2rem"
-          >
-            2
-          </div>
-          <div class="bg-success" style="width: 3rem; height: 2px"></div>
-        </div>
-        <div class="d-flex align-items-center">
-          <div
-            class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-            style="width: 2rem; height: 2rem"
-          >
-            3
-          </div>
-        </div>
-      </div>
-
-      <!-- Content -->
-      <div class="text-center mb-4" style="max-width: 600px">
-        <h1 class="text-secondary fw-medium">Mindfulness On Demand</h1>
-        <h2 class="text-success fw-medium fs-4 fs-sm-3 fs-lg-1 px-3">
-          Discover Your 6-Step Personalized Serenity Blueprint
-        </h2>
-      </div>
-
-      <!-- CTA Button -->
-      <form action="" method="post">
-        {% csrf_token %}
-        <button
-          type="submit"
-          name="active"
-          value="next"
-          class="btn btn-success fw-bold text-white px-4 py-2"
+    <div x-data="handelSubmit()">
+      {% if request.GET.status == 'success' %}
+      <div>
+        <div
+          class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
         >
-          TAKE QUIZ NOW!
-        </button>
-      </form>
-    </div>
-    {% endif %} 
-    
-    
-    
-    {% if active_id == 2 %}
-    <div>
-      <!-- Logo -->
-      <div class="my-5 container">
-        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
-        width="200" height="60" class="img-fluid" />
+          <!-- Logo -->
+          <div class="mb-4">
+            <img src="{% static "assets/images/logo.png" %}" alt="NutriVein
+            Logo" width="200" height="60" class="img-fluid" />
+          </div>
+
+          <!-- Content -->
+          <div class="text-center mb-4" style="max-width: 600px">
+            <h1 class="text-secondary fw-medium">CONGRATULATIONS!!</h1>
+            <h2 class="text-success fw-medium fs-2 fs-sm-3 fs-lg-1 px-3">
+              Thank You For Taking This Quiz.
+            </h2>
+          </div>
+        </div>
       </div>
-      <div class="min-vh-100 container w-50 px-3 py-4">
-        <!-- Progress Steps -->
-        <div class="d-flex mb-4 w-100" style="max-width: 300px">
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              1
-            </div>
-            <div class="bg-success" style="width: 3rem; height: 2px"></div>
+      {% else %}
+      <div x-show="form_status === 'init'">
+        <div
+          class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
+        >
+          <!-- Logo -->
+          <div class="mb-4">
+            <img src="{% static "assets/images/logo.png" %}" alt="NutriVein
+            Logo" width="200" height="60" class="img-fluid" />
           </div>
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              2
-            </div>
-            <div class="bg-success" style="width: 3rem; height: 2px"></div>
-          </div>
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              3
-            </div>
-          </div>
-        </div>
-        <!-- Question -->
-        <div class="mb-4">
-          <div class="d-flex justify-content-between">
-            <h1 class="fs-4 fw-bold">How do you usually feel after meals?</h1>
-            <span class="text-danger fs-6">(Required)</span>
-          </div>
-          <p class="text-muted">Select one option.</p>
-        </div>
-        <!--option-->
-        <div class="d-flex">
-          <!--cart 1-->
+
+          <!-- Progress Steps -->
           <div
-            class="card position-relative w-400px h-400px bg-light d-flex align-items-center justify-content-center p-3"
+            class="d-flex justify-content-center align-items-center mb-4 w-100"
+            style="max-width: 300px"
           >
-            <div class="position-relative">
-              <!-- Clock Circle -->
-              <img
-                src="https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1"
-                width="100"
-                height="100"
-                alt=""
-                srcset=""
-              />
+            <template x-for="(item, index) in items.length-1" :key="index">
+              <div class="d-flex align-items-center">
+                <div
+                  class="d-flex justify-content-center align-items-center rounded-circle border border-success text-success"
+                  style="width: 2rem; height: 2rem"
+                  x-text="index+1"
+                  :class="{'bg-success text-white': index === 0}"
+                >
+                  <!--1-->
+                </div>
+                <div class="bg-success" style="width: 3rem; height: 2px"></div>
+              </div>
+            </template>
+
+            <div class="d-flex align-items-center">
+              <div
+                class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+                style="width: 2rem; height: 2rem"
+                x-text="items.length"
+              ></div>
             </div>
           </div>
-        </div>
 
-        <!--cta-->
-        <form action="" method="post" class="d-flex justify-content-between w-100 py-5">
-          <!-- Back Button -->
-          <button
-          type="submit"
-          name="prev"
-            class="btn btn-dark fw-bold text-white px-4 py-2"
-            style="background-color: #27272a; color: white; border: none"
-            onmouseover="this.style.backgroundColor='#3f3f46'"
-            onmouseout="this.style.backgroundColor='#27272a'"
-          >
-            Back
-          </button>
+          <!-- Content -->
+          <div class="text-center mb-4" style="max-width: 600px">
+            <h1 class="text-secondary fw-medium">{{quiz.title}}</h1>
+            <h2 class="text-success fw-medium fs-4 fs-sm-3 fs-lg-1 px-3">
+              {{quiz.description}}
+            </h2>
+          </div>
 
-          <!-- Next Button -->
+          <!-- CTA Button -->
+
           <button
-          type="submit"
-          name="next"
+            @click="set_form_status('process')"
             class="btn btn-success fw-bold text-white px-4 py-2"
-            onmouseover="this.style.backgroundColor='#38a169'"
-            onmouseout="this.style.backgroundColor='#48bb78'"
           >
-            Next
-          </form>
+            TAKE QUIZ NOW!
+          </button>
         </div>
+      </div>
+      {% endif %}
+
+      <div x-show="form_status === 'process'">
+        <template x-for="(item, index) in items" :key="item.id">
+          <div x-show="index === currentIndex">
+            <div x-show="item.type === 'radio' ">
+              {% include "inputs/radio.html" %}
+            </div>
+            <div x-show="item.type === 'text' ">
+              {% include "inputs/text.html" %}
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div x-show="form_status === 'submit'">
+        {% include "inputs/submit.html" %}
       </div>
     </div>
-    {% endif %}
-
-
-
-    {% if active_id == 3 %}
-    <div>
-      <!-- Logo -->
-      <div class="my-5 container">
-        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
-        width="200" height="60" class="img-fluid" />
-      </div>
-      <div class="min-vh-100 container w-50 px-3 py-4">
-        <!-- Progress Steps -->
-        <div class="d-flex mb-4 w-100" style="max-width: 300px">
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              1
-            </div>
-            <div class="bg-success" style="width: 3rem; height: 2px"></div>
-          </div>
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              2
-            </div>
-            <div class="bg-success" style="width: 3rem; height: 2px"></div>
-          </div>
-          <div class="d-flex align-items-center">
-            <div
-              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
-              style="width: 2rem; height: 2rem"
-            >
-              3
-            </div>
-          </div>
-        </div>
-        <!-- Question -->
-        <div class="mb-4">
-          <div class="d-flex justify-content-between">
-            <h1 class="fs-4 fw-bold">How do you usually feel after meals?</h1>
-            <span class="text-danger fs-6">(Required)</span>
-          </div>
-          <p class="text-muted">Select one option.</p>
-        </div>
-        <!--option-->
-        <div class="d-flex">
-          <!--cart 1-->
-          <div
-            class="card position-relative w-400px h-400px bg-light d-flex align-items-center justify-content-center p-3"
-          >
-            <div class="position-relative">
-              <!-- Clock Circle -->
-              <img
-                src="https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1"
-                width="100"
-                height="100"
-                alt=""
-                srcset=""
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="health-goals-container">
-          <!-- Goal 1 -->
-          <button class="goal-item" onclick="selectGoal(1)">
-            <div class="indicator" id="indicator-1"></div>
-            <span>Maintaining steady energy throughout the day.</span>
-          </button>
-
-          <!-- Goal 2 -->
-          <button class="goal-item" onclick="selectGoal(2)">
-            <div class="indicator" id="indicator-2"></div>
-            <span>Managing my weight in a healthy and sustainable way.</span>
-          </button>
-
-          <!-- Goal 3 -->
-          <button class="goal-item selected" onclick="selectGoal(3)">
-            <div class="indicator selected-indicator" id="indicator-3">
-              <span class="checkmark">✓</span>
-            </div>
-            <span>Improving my digestion and reducing bloating.</span>
-          </button>
-
-          <!-- Goal 4 -->
-          <button class="goal-item" onclick="selectGoal(4)">
-            <div class="indicator" id="indicator-4"></div>
-            <span
-              >Supporting long-term health, like heart and blood sugar
-              balance.</span
-            >
-          </button>
-        </div>
-
-        <!--cta-->
-        <div class="d-flex justify-content-between w-100 py-5">
-          <!-- Back Button -->
-          <button
-            class="btn btn-dark rounded-pill px-5"
-            style="background-color: #27272a; color: white; border: none"
-            onmouseover="this.style.backgroundColor='#3f3f46'"
-            onmouseout="this.style.backgroundColor='#27272a'"
-          >
-            Back
-          </button>
-
-          <!-- Next Button -->
-          <button
-            class="btn btn-success rounded-pill px-5"
-            onmouseover="this.style.backgroundColor='#38a169'"
-            onmouseout="this.style.backgroundColor='#48bb78'"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
-
 
     <script>
       function selectGoal(id) {
@@ -377,6 +194,51 @@
           .classList.add("selected-indicator");
         document.querySelector(`#indicator-${id}`).innerHTML = "✓";
         items[id - 1].classList.add("selected");
+      }
+    </script>
+
+    <script>
+      function handelSubmit() {
+        return {
+          items: JSON.parse("{{ question_set|escapejs }}"),
+          currentIndex: 0,
+          form_status: "init", // init| process | submit
+
+          set_form_status(value) {
+            this.form_status = value;
+          },
+          checkAnswer() {
+            const currentItem = this.items[this.currentIndex];
+            if (currentItem.type === "text" && !currentItem.answer) {
+              return true;
+            } else if (currentItem.type === "radio") {
+              // console.log(!currentItem?.selected_option);
+              return true;
+            }
+          },
+
+          set_answer(value) {
+            if (this.items[this.currentIndex].type === "text") {
+              this.items[this.currentIndex].answer = value;
+            } else {
+              this.items[this.currentIndex].selected_option = [value];
+            }
+          },
+
+          // Method to go to the next item
+          nextItem() {
+            if (this.currentIndex < this.items.length - 1) {
+              this.currentIndex++;
+            }
+          },
+
+          // Method to go to the previous item
+          prevItem() {
+            if (this.currentIndex > 0) {
+              this.currentIndex--;
+            }
+          },
+        };
       }
     </script>
 

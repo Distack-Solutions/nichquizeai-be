@@ -1,0 +1,59 @@
+{% load static %}
+<div>
+  <!-- Logo -->
+  <div class="my-5 container">
+    <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+    width="200" height="60" class="img-fluid" />
+  </div>
+  <div class="min-vh-90 container w-50 px-3 py-4">
+    <!-- Progress Steps -->
+    {% include "./progress.html" %}
+
+    <!-- Question -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between">
+        <h1 class="fs-4 fw-bold" x-text="item.title">
+          How do you usually feel after meals?
+        </h1>
+        <span class="text-danger fs-6">(Required)</span>
+      </div>
+      <p class="text-muted">Select one option.</p>
+    </div>
+
+    <!--option-->
+    <div class="health-goals-container">
+      <!-- Goals -->
+      <template x-for="(option, index) in item.options" :key="option.id">
+        <button
+          class="goal-item"
+          @click="set_answer(option.id)"
+          :class="{'selected': item?.selected_option?.includes(option.id)}"
+        >
+          <div
+            class="indicator"
+            :class="{'selected-indicator': item?.selected_option?.includes(option.id)}"
+          >
+            <span class="checkmark">✓</span>
+          </div>
+          <div class="gap-x-4">
+            <img
+              x-show="option.image"
+              :src="`/media/${option.image}`"
+              width="100"
+              height="100"
+              alt=""
+              srcset=""
+            />
+
+            <span x-text="option.text"
+              >Maintaining steady energy throughout the day. AAA</span
+            >
+          </div>
+        </button>
+      </template>
+    </div>
+
+    <!--cta-->
+    {% include "./cta.html" %}
+  </div>
+</div>
