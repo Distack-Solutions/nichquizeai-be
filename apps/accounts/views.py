@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.core.cache import cache
 
 
 
@@ -64,3 +65,15 @@ def signup_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+def test(request):
+    context = {
+        "active_id" : cache.get('active_id', 1)
+    }
+    if request.method == 'POST':
+        active = request.POST.get('active')
+        print()
+        cache.set('active_id', 2)
+        return redirect('test')
+    return render(request, "test.html", context=context)
