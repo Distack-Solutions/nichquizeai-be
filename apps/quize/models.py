@@ -7,6 +7,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+# python manage.py makemigrations
+# python manage.py migrate
+# python manage.py runserver
+
 class Quiz(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True
@@ -14,9 +18,11 @@ class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     category = models.CharField(max_length=255, null=True, blank=True, default="Productivity Quiz")
+    is_published = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return self.title
@@ -82,6 +88,9 @@ class Attempt(models.Model):
         on_delete=models.CASCADE,
         related_name='attempts'
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"Attempt by {self.respondent} on {self.quiz}"
@@ -109,6 +118,7 @@ class Response(models.Model):
 
     #     if not self.answer and not self.selected_option.exists():
     #         raise ValidationError("Either 'answer' or 'selected_option' must be provided.")
+
 
     def __str__(self):
         return f"Response for {self.question} in {self.attempt}"

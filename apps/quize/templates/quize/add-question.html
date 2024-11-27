@@ -1,0 +1,167 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="nk-content-wrap">
+  <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-between">
+      <div class="nk-block-head-content">
+        <h3 class="nk-block-title page-title">Quiz: {{ quiz.title }}</h3>
+        <div class="nk-block-des text-soft">
+          <p>Add Questions in quiz</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nk-block">
+    <div class="card card-bordered">
+      <div class="card-inner">
+        <div class="card-head">
+          <h5 class="card-title">Basic Information</h5>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-4">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="form-label" for="title">Title</label>
+                <div class="form-control-wrap">
+                  <input type="text" name="title" class="form-control" id="title" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea
+                  class="form-control no-resize"
+                  id="description"
+                  name="description"
+                  spellcheck="false"
+                  required
+                ></textarea>
+              </div>
+            </div>
+
+
+            <div class="col-12">
+              <div class="form-group">
+                <button type="submit" class="btn btn-lg btn-primary">
+                  Save & Go Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="nk-block nk-block-lg">
+    <div class="card card-bordered">
+      <div class="row g-0 col-sep col-sep-md col-sep-xl">
+        <div class="col-md-4 col-xl-4">
+          <div class="card-inner">
+            <ul class="nk-stepper-nav nk-stepper-nav-s1 stepper-nav is-vr">
+              <li class="current">
+                <div class="step-item">
+                  <div class="step-text">
+                    <div class="lead-text">Question text</div>
+                    <div class="sub-text">Question_type</div>
+
+                    <!-- Edit Delete option -->
+                  </div>
+                </div>
+              </li>
+              
+
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-8 col-xl-8">
+          <div class="card-inner">
+            <div class="nk-stepper-content">
+              <div class="nk-stepper-steps stepper-steps">
+                <div class="nk-stepper-step active">
+                  <h5 class="title mb-3">Enter Question</h5>
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="form-label" for="cp1-project-name"
+                          >Question</label
+                        >
+                        <div class="form-control-wrap">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="cp1-project-name"
+                            name="cp1-project-name"
+                            required=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                   
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label class="form-label">Question Type</label>
+                        <div class="form-control-wrap">
+                          <select
+                            class="form-select js-select2 select2-hidden-accessible"
+                            data-select2-id="3"
+                            tabindex="-1"
+                            aria-hidden="true"
+                          >
+                            <option value="default_option" data-select2-id="5">
+                              Default Option
+                            </option>
+                            <option
+                              value="option_select_name"
+                              data-select2-id="27"
+                            >
+                              Option select name
+                            </option>
+                            <option
+                              value="option_select_name"
+                              data-select2-id="28"
+                            >
+                              Option select name
+                            </option></select
+                          >
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <div class="d-flex">
+                          <label class="form-label">Options</label>
+                          <label class="form-label text-end">Add option button</label>
+                        </div>
+                     
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ul
+                class="nk-stepper-pagination pt-4 gx-4 gy-2 stepper-pagination"
+              >
+                <li class="step-prev" style="display: none">
+                  <button class="btn btn-dim btn-primary">Prev</button>
+                </li>
+                <li class="step-next" style="display: block">
+                  <button class="btn btn-primary">Save</button>
+                </li>
+                <li class="step-submit" style="display: none">
+                  <button class="btn btn-primary">Submit</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

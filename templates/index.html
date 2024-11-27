@@ -1,11 +1,30 @@
 {% extends "base.html" %} {% block content %}
+
+
+<style>
+  .card .material-icons {
+  font-size: 36px; /* Adjust size as needed */
+}
+.card h6.title {
+  color: #333;
+  font-weight: 600;
+}
+.card .amount {
+  color: #555;
+}
+.list-group-item {
+  font-size: 14px;
+}
+
+</style>
+
 <div class="nk-content-wrap">
   <div class="nk-block-head nk-block-head-sm">
     <div class="nk-block-between">
       <div class="nk-block-head-content">
         <h3 class="nk-block-title page-title">Overview</h3>
         <div class="nk-block-des text-soft">
-          <p>Welcome to DashLite Dashboard Template.</p>
+          <p></p>
         </div>
       </div>
       <div class="nk-block-head-content">
@@ -20,8 +39,8 @@
             <ul class="nk-block-tools g-3">
               
               <li class="nk-block-tools-opt">
-                <a href="{% url 'quize_add' %}" class="btn btn-primary"
-                  ><em class="icon ni ni-plus"></em><span>Add New Quize</span></a
+                <a href="{% url 'add-quiz' %}" class="btn btn-primary"
+                  ><em class="icon ni ni-plus"></em><span>Add New Quiz</span></a
                 >
               </li>
             </ul>
@@ -32,74 +51,123 @@
   </div>
   <div class="nk-block">
     <div class="row g-gs">
-      <div class="col-sm-6">
-        <div class="card card-bordered">
-          <div class="card-inner">
-            <div class="card-title-group align-start mb-2">
-              <div class="card-title">
-                <h6 class="title">Active Subscriptions</h6>
-              </div>
-              <div class="card-tools">
-                <em
-                  class="card-hint icon ni ni-help-fill"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="left"
-                  title="Total active subscription"
-                ></em>
-              </div>
-            </div>
-            <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
-              <div class="nk-sale-data">
-                <span class="amount">9.69K</span
-                ><span class="sub-title"
-                  ><span class="change down text-danger"
-                    ><em class="icon ni ni-arrow-long-down"></em>1.93%</span
-                  >since last month</span
-                >
-              </div>
-              <div class="nk-sales-ck">
-                <canvas
-                  class="sales-bar-chart"
-                  id="activeSubscription"
-                ></canvas>
-              </div>
+      <!-- Total Quizzes -->
+      <div class="col-md-4">
+        <div class="card card-bordered shadow-sm">
+          <div class="card-inner d-flex align-items-center">
+            <div>
+              <h6 class="title mb-2 d-flex align-items-center">
+                <span class="material-icons text-primary fs-2 me-3">quiz</span>
+                Total Quizzes
+              </h6>
+              <span class="amount fs-1 fw-bold h1 mt-3">{{ total_quizzes }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="card card-bordered">
+    
+      <!-- Published Quizzes -->
+      <div class="col-md-4">
+        <div class="card card-bordered shadow-sm">
+          <div class="card-inner d-flex align-items-center">
+            <div>
+              <h6 class="title mb-2 d-flex align-items-center">
+                <span class="material-icons text-primary fs-2 me-3">check_circle</span>
+                Published Quizzes
+              </h6>
+              <span class="amount fs-1 fw-bold h1 mt-3">{{ published_quizzes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Total Respondents -->
+      <div class="col-md-4">
+        <div class="card card-bordered shadow-sm">
+          <div class="card-inner d-flex align-items-center">
+            <div>
+              <h6 class="title mb-2 d-flex align-items-center">
+                <span class="material-icons text-primary fs-2 me-3">people</span>
+                Total Respondents
+              </h6>
+              
+              <span class="amount fs-1 fw-bold h1 mt-3">{{ total_respondents }}</span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Recent Attempts -->
+      <div class="col-md-12">
+        <div class="card card-bordered shadow-sm">
           <div class="card-inner">
-            <div class="card-title-group align-start mb-2">
-              <div class="card-title">
-                <h6 class="title">Avg Subscriptions</h6>
-              </div>
-              <div class="card-tools">
-                <em
-                  class="card-hint icon ni ni-help-fill"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="left"
-                  title="Daily Avg. subscription"
-                ></em>
-              </div>
+            <div class="d-flex align-items-center mb-3">
+              <span class="material-icons text-warning fs-3 me-2">history</span>
+              <h6 class="title mb-0 ">Recent Attempts</h6>
             </div>
-            <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
-              <div class="nk-sale-data">
-                <span class="amount">346.2</span
-                ><span class="sub-title"
-                  ><span class="change up text-success"
-                    ><em class="icon ni ni-arrow-long-up"></em>2.45%</span
-                  >since last week</span
-                >
-              </div>
-              <div class="nk-sales-ck">
-                <canvas class="sales-bar-chart" id="totalSubscription"></canvas>
-              </div>
+            <ul class="list-group list-group-flush">
+              {% for attempt in recent_attempts %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                  <strong>{{ attempt.respondent.full_name }}</strong> attempted <em>{{ attempt.quiz.title }}</em>
+                </span>
+                <small class="text-muted">{{ attempt.created_at|date:"d M, Y" }}</small>
+              </li>
+              {% empty %}
+              <li class="list-group-item text-muted">No recent attempts available.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-12">
+        <div class="card card-bordered shadow-sm">
+          <div class="card-inner">
+            <div class="d-flex align-items-center mb-3">
+              <span class="material-icons text-info fs-3 me-2">bar_chart</span>
+              <h6 class="title mb-0">Attempts Over Time</h6>
             </div>
+            <canvas id="attemptsChart" width="400" height="200"></canvas>
           </div>
         </div>
       </div>
     </div>
+    
   </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('attemptsChart').getContext('2d');
+  const attemptsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ chart_labels|safe }},
+      datasets: [{
+        label: 'Attempts',
+        data: {{ chart_data|safe }},
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderWidth: 2,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Date' } },
+        y: { title: { display: true, text: 'Total Attempts' } }
+      }
+    }
+  });
+</script>
+
+
 {% endblock content %}
