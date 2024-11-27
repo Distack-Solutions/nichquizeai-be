@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path(
         "",
-        views.DashboardView.as_view(),
+        views.dashboard,
         name="home",
     ),
 ]

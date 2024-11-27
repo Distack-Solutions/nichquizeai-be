@@ -119,8 +119,6 @@ class Response(models.Model):
     #     if not self.answer and not self.selected_option.exists():
     #         raise ValidationError("Either 'answer' or 'selected_option' must be provided.")
 
-    class Meta:
-        ordering = ('-id',)
 
     def __str__(self):
         return f"Response for {self.question} in {self.attempt}"

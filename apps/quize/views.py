@@ -17,17 +17,38 @@ from django.views.generic import ListView
 from .models import Quiz  # Replace with your actual model name
 from django.views.generic import DetailView
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 
 
 class QuizListView(ListView):
     model = Quiz
     template_name = 'quize/list-new.html'  # Update with your template name
     context_object_name = 'quizzes'
-    paginate_by = 10  # Add pagination if needed
 
     def get_queryset(self):
-        # Customize the queryset as per your requirements (e.g., filter by active/draft status)
-        return super().get_queryset().order_by('-id')  # Example: Order by latest quizzes
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search', '')
+        status_filter = self.request.GET.get('status', 'all')
+
+        # Filter by search query if provided
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query))
+
+        # Filter by status if provided
+        if status_filter == 'published':
+            queryset = queryset.filter(is_published=True)
+        elif status_filter == 'draft':
+            queryset = queryset.filter(is_published=False)
+
+        return queryset.order_by('-id')  # Order by latest quizzes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['status_filter'] = self.request.GET.get('status', 'all')
+        return context
+
+
 
 
 def quiz_detail(request, quiz_id):

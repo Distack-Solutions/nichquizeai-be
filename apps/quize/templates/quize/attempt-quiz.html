@@ -10,9 +10,9 @@
         <div class="mt-5">
             <img src="{% static 'assets/images/step.png' %}" class="my-5" alt="">
 
-            <h2 class="text-secondary my-4">{{ quiz.category }} on Demand</h2>
+            <h2 class="text-secondary my-4">{{ quiz.title }} on Demand</h2>
 
-            <h3 class="text-primary  my-4">Discover Your {{ quiz.questions.all.count }}-Step Personalized {{ quiz.category }} Blueprint</h3>
+            <h3 class="text-primary  my-4">Discover Your {{ quiz.questions.all.count }}-Step Personalized {{ quiz.title }} Blueprint</h3>
                         
             <a href="{% url 'start-quiz' quiz.id %}"  type="button" class="btn btn-primary btn-lg">Start Quiz</a>
         </div>

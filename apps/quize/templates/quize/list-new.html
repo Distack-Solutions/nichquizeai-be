@@ -39,20 +39,36 @@
           <div class="card-inner">
             <div class="card-title-group">
               <div class="card-title col-6">
-                <div class="dt-search">
-                  <input
-                    type="search"
-                    class="form-control form-control-sm"
-                    id="dt-search-quiz"
-                    placeholder="Search Quizzes"
-                  /><label for="dt-search-quiz"></label>
-                </div>
+                <form method="get" action="{% url 'quize_list' %}">
+                  <div class="dt-search">
+                    <input
+                      type="search"
+                      name="search"
+                      value="{{ search_query }}"
+                      class="form-control form-control-sm"
+                      id="dt-search-quiz"
+                      placeholder="Search Quizzes"
+                    />
+                  </div>
+                </form>
               </div>
               <div class="card-tools">
                 <ul class="card-tools-nav">
-                  <li><a href="#"><span>Active</span></a></li>
-                  <li><a href="#"><span>Inactive</span></a></li>
-                  <li class="active"><a href="#"><span>All</span></a></li>
+                  <li class="{% if status_filter == 'all' %}active{% endif %}">
+                    <a href="{% url 'quize_list' %}?status=all&search={{ search_query }}">
+                      <span>All</span>
+                    </a>
+                  </li>
+                  <li class="{% if status_filter == 'published' %}active{% endif %}">
+                    <a href="{% url 'quize_list' %}?status=published&search={{ search_query }}">
+                      <span>Published</span>
+                    </a>
+                  </li>
+                  <li class="{% if status_filter == 'draft' %}active{% endif %}">
+                    <a href="{% url 'quize_list' %}?status=draft&search={{ search_query }}">
+                      <span>Draft</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
