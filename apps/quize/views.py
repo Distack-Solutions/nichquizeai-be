@@ -18,8 +18,10 @@ from .models import Quiz  # Replace with your actual model name
 from django.views.generic import DetailView
 from django.views.decorators.http import require_POST
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-
+@method_decorator(login_required, name="dispatch")
 class QuizListView(ListView):
     model = Quiz
     template_name = 'quize/list-new.html'  # Update with your template name
@@ -49,8 +51,7 @@ class QuizListView(ListView):
         return context
 
 
-
-
+@login_required
 def quiz_detail(request, quiz_id):
     # Get the quiz instance by UUID (or return a 404 if not found)
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -69,6 +70,7 @@ def quiz_detail(request, quiz_id):
     return render(request, 'quize/quiz-detail.html', context)
 
 
+@login_required
 def create_quiz(request):
     if request.method == "POST":
         title = request.POST.get("title")
@@ -92,6 +94,7 @@ def create_quiz(request):
     return render(request, "quize/add.html")
 
 
+@login_required
 def update_quiz_info(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
 
@@ -114,6 +117,7 @@ def update_quiz_info(request, quiz_id):
     return redirect('quiz-detail', quiz_id=quiz.id)
 
 
+@login_required
 def publish_quiz(request, quiz_id):
     # Fetch the quiz object
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -134,6 +138,7 @@ def publish_quiz(request, quiz_id):
     return redirect("quiz-detail", quiz_id=quiz.id)  # Redirect to the quiz detail page
 
 
+@login_required
 def add_questions(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
 
@@ -170,7 +175,7 @@ def add_questions(request, quiz_id):
     )
 
 
-
+@login_required
 def edit_question(request, quiz_id, question_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     question = get_object_or_404(Question, id=question_id, quiz=quiz)
@@ -212,7 +217,7 @@ def edit_question(request, quiz_id, question_id):
     return render(request, "quize/edit-question.html", {"quiz": quiz, "question": question})
 
 
-
+@login_required
 def delete_question(request, quiz_id, question_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     question = get_object_or_404(Question, id=question_id, quiz=quiz)
@@ -222,13 +227,14 @@ def delete_question(request, quiz_id, question_id):
     return redirect('quiz-detail', quiz_id=quiz_id)
 
 
-
+@login_required
 def delete_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     
     quiz.delete()
     messages.success(request, "Quiz has been deleted successfully.")
     return redirect('quize_list') 
+
 
 
 def attempt_quiz(request, quiz_id):
@@ -247,7 +253,6 @@ def start_quiz(request, quiz_id):
         'questions': quiz.questions.all()
     }
     return render(request, "quize/start-quiz.html", context)
-
 
 
 
@@ -309,6 +314,7 @@ def submit_quiz(request, quiz_id):
 
     # Redirect to a results or success page (you can customize this as needed)
     return redirect('quiz-results', attempt_id=attempt.id)
+
 
 
 def quiz_results(request, attempt_id):

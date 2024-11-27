@@ -20,7 +20,11 @@ from apps.quize.models import *
 
 from django.db.models.functions import TruncDay
 from django.db.models import Count
+from django.contrib.auth import login, logout
+from django.core.cache import cache
 
+
+@login_required
 def dashboard(request):
     total_quizzes = Quiz.objects.count()
     published_quizzes = Quiz.objects.filter(is_published=True).count()
@@ -71,6 +75,9 @@ def login_view(request):
 
 
 def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     next_url = request.GET.get("next") or request.POST.get("next")
     form = UserRegistrationForm(request.POST or None)
     context = {"form": form, "next": next_url}
