@@ -41,13 +41,9 @@ class AttemptAdmin(admin.ModelAdmin):
 
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):
-    list_display = ("question", "attempt", "display_selected_options", "answer")
-    search_fields = (
-        "question__question_text",
-        "attempt__respondent__full_name",
-        "answer",
-    )
-    ordering = ("attempt",)
+    list_display = ('question', 'attempt', 'display_selected_options', 'answer')
+    search_fields = ('question__question_text', 'attempt__respondent__full_name', 'answer')
+    ordering = ('-id',)
 
     def display_selected_options(self, obj):
         return ", ".join([option.text for option in obj.selected_option.all()])

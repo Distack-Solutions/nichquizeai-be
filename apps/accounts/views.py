@@ -15,17 +15,45 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib import messages
+
+from apps.quize.models import *
+
+from django.db.models.functions import TruncDay
+from django.db.models import Count
 from django.contrib.auth import login, logout
 from django.core.cache import cache
 
 
-class DashboardView(View):
-    template_name = "index.html"
+@login_required
+def dashboard(request):
+    total_quizzes = Quiz.objects.count()
+    published_quizzes = Quiz.objects.filter(is_published=True).count()
+    total_respondents = Respondent.objects.count()
+    total_attempts = Attempt.objects.count()
+    recent_attempts = Attempt.objects.order_by('-created_at')[:5]
+    
+    # Group attempts by date
+    attempts_by_date = (
+        Attempt.objects.annotate(day=TruncDay('created_at'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+    
+    # Prepare data for the chart
+    chart_labels = [entry['day'].strftime('%d %b') for entry in attempts_by_date]
+    chart_data = [entry['total'] for entry in attempts_by_date]
 
-    def get(self, request, *args, **kwargs):
-
-        context = {}
-        return render(request, self.template_name, context=context)
+    context = {
+        'total_quizzes': total_quizzes,
+        'published_quizzes': published_quizzes,
+        'total_respondents': total_respondents,
+        'total_attempts': total_attempts,
+        'recent_attempts': recent_attempts,
+        'chart_labels': chart_labels,
+        'chart_data': chart_data,
+    }
+    return render(request, 'index.html', context)
 
 
 def login_view(request):
@@ -47,6 +75,9 @@ def login_view(request):
 
 
 def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     next_url = request.GET.get("next") or request.POST.get("next")
     form = UserRegistrationForm(request.POST or None)
     context = {"form": form, "next": next_url}
@@ -108,6 +139,7 @@ def test(request, id):
         respondent, create = Respondent.objects.get_or_create(
             email=email, defaults={"full_name": full_name}
         )
+        
 
         # Attempt
         attempt = Attempt.objects.create(quiz=quiz, respondent=respondent)

@@ -1,0 +1,61 @@
+/* Option Card Styling */
+.option-card {
+    cursor: default;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.my-option-card.selected {
+    border: solid 2px #28a745;
+}
+
+.option-card:hover {
+    transform: scale(1.05);
+}
+
+.card {
+    border: 1px solid #ddd;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-img-top {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Border Green on Selection */
+.option-card.selected {
+    border: 2px solid #28a745 !important; /* Green Border */
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.5); /* Green shadow */
+}
+
+/* Style the checked checkbox */
+input[type="checkbox"]:checked {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* Optional: Customize the appearance of the radio and checkbox for better look */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* If you want a more custom look, you can create a circular green checked effect */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}

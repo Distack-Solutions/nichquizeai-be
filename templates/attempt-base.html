@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="js">
+<!-- Mirrored from dashlite.net/demo4/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 25 Nov 2024 15:11:37 GMT -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Softnio">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+        content="A powerful and conceptual apps base dashboard template that especially build for developers and programmers.">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+    <title>SaaS Dashboard | Nutrivein Quiz App</title>
+    <link rel="stylesheet" href="{% static 'assets/css/dashlitee1e3.css' %}">
+    <link id="skin-default" rel="stylesheet" href="{% static 'assets/css/themee1e3.css' %}">   
+    <link id="skin-default" rel="stylesheet" href="{% static 'assets/css/theme-green.css' %}">   
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="{% static 'assets/css/custom-css.css' %}">
+
+    <style>
+        .bg-light{
+            background-color: rgb(243, 243, 243) !important;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body class="nk-body bg-white npc-default has-aside ">
+    <div class="nk-app-root">
+        <div class="nk-main ">
+            <div class="nk-wrap ">
+                <div class="nk-header nk-header-fixed is-light  nk-header-fixed">
+                    <div class="container-lg wide-xl">
+                        <div class="nk-header-wrap">
+                            <div class="nk-header-brand">
+                                <a href="index.html" class="logo-link">
+                                    <img
+                                        class="logo-light logo-img" src="{% static "assets/images/logo.png" %}"
+                                        srcset="{% static 'assets/images/logo.png' %}" alt="logo">
+                                        <img class="logo-dark logo-img"
+                                        src="{% static 'assets/images/logo.png' %}" srcset="{% static "assets/images/logo.png" %}"
+                                        alt="logo-dark">
+                                    </a>
+                            </div>
+                           
+                            <div class="nk-header-tools">
+                                <ul class="nk-quick-nav">
+                                    
+                                    
+                                
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="nk-content ">
+                    <div class="container-fluid wide-xl">
+                        <div class="nk-content-inner">
+                            
+                            
+                            <div class="nk-content-body">
+
+                                {% include 'msgs.inc.html' %}
+
+                                {% block content %}{% endblock content %}
+
+                                <div class="nk-footer">
+                                    <div class="container wide-xl">
+                                        <div class="nk-footer-wrap g-2">
+                                            <div class="nk-footer-copyright"> &copy; 2024 by NutriVein</div>
+                                            <div class="nk-footer-links">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+    
+    <script src="{% static 'assets/js/bundlee1e3.js' %}"></script>
+    <script src="{% static 'assets/js/scriptse1e3.js' %}"></script>
+    <script src="{% static 'assets/js/demo-settingse1e3.js' %}"></script>
+    <script src="{% static 'assets/js/charts/gd-defaulte1e3.js' %}"></script>
+</body>
+<!-- Mirrored from dashlite.net/demo4/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 25 Nov 2024 15:12:15 GMT -->
+
+</html>
