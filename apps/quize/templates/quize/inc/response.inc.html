@@ -1,0 +1,111 @@
+{% load static %}
+
+<!-- Display Responses -->
+{% for response in responses %}
+    <div class="mb-5">
+        <h6 class="text-muted">Question {{ forloop.counter }}</h6>
+        <h5 class="text-secondary my-4">{{ response.question.question_text }} {% if response.question.question_type == "checkboxes" %}(Select all that apply){% endif %}</h5>
+
+        {% if response.question.question_type == "checkboxes" %}
+        <!-- Checkboxes -->
+        <div class="row">
+            {% for option in response.question.options.all %}
+            <div class="{% if option.image %}col-sm-3 col-md-3{% else %}col-12 col-md-12{% endif %} mb-3 option-card" id="option-{{ option.id }}">
+                <label class="form-check-label card p-0 shadow-sm rounded my-option-card {% if option in response.selected_option.all %}selected{% endif %}">
+                    {% if option.image %}
+                    <img src="{{ option.image.url }}" class="card-img-top" alt="Option Image">
+                    {% endif %}
+                    <div class="card-body text-left">
+                        <div class="form-check d-flex align-items-center">
+                            {% if not option.image %}
+                            <input 
+                                class="checkbox-input form-check-input my-0" 
+                                type="checkbox" 
+                                id="question-{{ response.question.id }}-option-{{ option.id }}" 
+                                name="question_{{ response.question.id }}[]" 
+                                value="{{ option.id }}" 
+                                disabled
+                                {% if option in response.selected_option.all %} checked {% endif %}
+                            >
+
+                            <label class="form-check-label my-0 mx-3" for="question-{{ response.question.id }}-option-{{ option.id }}">
+                                <h5 class="card-title my-0 py-0">{{ option.text }}</h5>
+                            </label>
+                            {% else %}
+
+                            <label class="form-check-label my-0" for="question-{{ response.question.id }}-option-{{ option.id }}">
+                                <h5 class="card-title my-0 py-0">{{ option.text }}</h5>
+                            </label>
+
+                            {% endif %}
+                           
+                        </div>
+                    </div>
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% elif response.question.question_type == "radio" %}
+        <!-- Radio Buttons -->
+        <div class="row">
+            {% for option in response.question.options.all %}
+            <div class="{% if option.image %}col-sm-3 col-md-3{% else %}col-12 col-md-12{% endif %} mb-3 option-card" id="option-{{ option.id }}">
+                <label class="card shadow-sm my-option-card form-check-label {% if option in response.selected_option.all %}selected{% endif %}">
+                    {% if option.image %}
+                        <img src="{{ option.image.url }}" class="card-img-top" alt="Option Image">
+                    {% endif %}
+
+                    <div class="card-body text-left">
+                        <div class="form-check">
+                            {% if not option.image %}
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="question-{{ response.question.id }}-option-{{ option.id }}" 
+                                name="question_{{ response.question.id }}" 
+                                value="{{ option.id }}" 
+                                {% if option in response.selected_option.all %} checked {% endif %}
+                                disabled
+                            >
+
+                            <label class="form-check-label mx-3" for="question-{{ response.question.id }}-option-{{ option.id }}">
+                                <h5 class="card-title my-0 py-0">{{ option.text }}</h5>
+                            </label>
+
+                            {% else %}
+
+                            
+                            <label class="form-check-label" for="question-{{ response.question.id }}-option-{{ option.id }}">
+                                <h5 class="card-title my-0 py-0">{{ option.text }}</h5>
+                            </label>
+
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+
+             <!-- Text Input -->
+             <div>
+                <input 
+                    type="text" 
+                    class="form-control fs-2 p-3 form-control-lg" 
+                    id="question-{{ question.id }}" 
+                    name="question_{{ question.id }}" 
+                    placeholder="Enter your answer here" 
+                    value="{{ response.answer }}"
+                    readonly
+                    disabled>
+            </div>
+
+    
+
+        {% endif %}
+    </div>
+{% endfor %}

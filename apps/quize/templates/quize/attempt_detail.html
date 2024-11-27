@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="nk-content-wrap">
+
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+          <div class="nk-block-head-content">
+            <h6 class="text-muted">Attempt Details</h6>
+            <h3 class="nk-block-title page-title">Quiz: {{ quiz.title }} {% if quiz.is_published %}
+                <span class="badge badge-pill badge-primary text-primary">Published</span>{% endif %}
+            </h3>
+            
+            <div class="nk-block-des text-soft mt-3">
+              <p class="mb-0 fs-4"><b>Respondent:</b> &nbsp; {{ attempt.respondent.full_name }} ({{ attempt.respondent.email }})</p>
+            </div>
+          
+          </div>
+
+          <div class="nk-block-head-content">
+            <div class="toggle-wrap nk-block-tools-toggle">
+              <a
+                href="#"
+                class="btn btn-icon btn-trigger toggle-expand me-n1"
+                data-target="pageMenu"
+                ><em class="icon ni ni-more-v"></em
+              ></a>
+
+              
+              <div class="toggle-expand-content" data-content="pageMenu">
+                <ul class="nk-block-tools g-3">
+                  
+                  <li class="nk-block-tools-opt">
+                    <a href="#" class="btn btn-primary">
+                        <i class="material-icons">print</i>
+                        <span class="mx-1">Print Report</span>
+                        </a>
+                  </li>
+                </ul>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+  <!-- Summary Section -->
+  <div class="row g-4 mt-0">
+    <div class="col-md-4 col-sm-12">
+      <div class="card border bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Total Answers</h6>
+          <p class="card-text h4">{{ responses.count }}</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-4 col-sm-12">
+      <div class="card border bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Attempted on</h6>
+          <p class="card-text h4">{{ attempt.created_at.date }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-12">
+      <div class="card border bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Status</h6>
+          <p class="card-text h4">Report Generated</p>
+        </div>
+      </div>
+    </div>
+
+    
+    
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mt-4">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#tab-responses">Responses</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#tab-report">Report</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- Questions Tab -->
+    <div class="tab-pane fade show active" id="tab-responses">
+      <div class="mt-3">
+        <h3 class="nk-block-title page-title my-4">Responses</h3>
+        <div class="row">
+            {% if not responses %}
+
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex align-items-center bg-white text-secondary">
+                        <p class="text-muted">No response added in this attempt.</p>
+                    </div>
+                
+                </div>
+            </div>
+
+            {% endif %}
+
+            {% include 'quize/inc/response.inc.html' %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Attempts Tab -->
+    <div class="tab-pane fade" id="tab-report">
+      <div class="mt-3">
+
+        <h3 class="nk-block-title page-title my-4">Report</h3>
+
+      </div>
+    </div>
+
+   
+  </div>
+
+  <a type="button" href="{% url 'quiz-detail' quiz.id %}" class="btn btn-primary mt-2">View Quiz</a>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#copyBtn").on('click', function () {
+            $("#copiedStatus").show();
+            setTimeout(() => {
+                $("#copiedStatus").hide();    
+            }, 2000);
+        })
+        
+    })
+</script>
+
+{% endblock %}

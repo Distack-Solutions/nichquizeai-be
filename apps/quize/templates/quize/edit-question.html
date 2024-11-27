@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container nk-content-wrap">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+          <div class="nk-block-head-content">
+            <h3 class="nk-block-title page-title">Quiz: {{ quiz.title }} {% if quiz.is_published %}
+                <span class="badge badge-pill badge-primary text-primary">Published</span>{% endif %}
+            </h3>
+            <div class="nk-block-des text-soft">
+              <p>Edit the selected question.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="card card-bordered p-4">
+        <form method="post" action="{% url 'edit-question' quiz.id question.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="questionText" class="form-label">Question Text</label>
+              <input type="text" class="form-control" id="questionText" name="question_text" value="{{ question.question_text }}" required />
+            </div>
+        
+            <div class="mb-3">
+              <label for="questionType" class="form-label">Question Type</label>
+              <select class="form-select" id="questionType" name="question_type" required>
+                <option value="text" {% if question.question_type == 'text' %}selected{% endif %}>Text</option>
+                <option value="number" {% if question.question_type == 'number' %}selected{% endif %}>Number</option>
+                <option value="checkboxes" {% if question.question_type == 'checkboxes' %}selected{% endif %}>Checkboxes</option>
+                <option value="radio" {% if question.question_type == 'radio' %}selected{% endif %}>Radio</option>
+              </select>
+            </div>
+
+            <div id="optionsContainer" {% if question.question_type != 'checkboxes' and question.question_type != 'radio' %}style="display: none;"{% endif %}>
+              <label class="form-label d-flex align-items-center">
+                Options
+                <i class="material-icons mx-1" id="addOptionButton">add_circle</i>
+              </label>
+             
+              <div class="mb-3" id="options">
+                {% for option in question.options.all %}
+                <div class="input-group mb-2">
+                    <!-- Existing Image Preview -->
+                    {% if option.image %}
+                    <div class="d-flex align-items-center">
+                        <img src="{{ option.image.url }}" alt="Existing Image" class="img-thumbnail" style="max-width: 100px;" />
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Existing Option Text (Readonly) -->
+                    <input type="text" class="form-control bg-light" name="option_text-{{ option.id }}" value="{{ option.text }}" readonly />
+            
+                    <!-- Delete Option Button -->
+                    <button type="button" class="btn btn-outline-danger delete-existing-option">Remove</button>
+                </div>
+                {% endfor %}
+            </div>
+            
+
+            </div>
+        
+            <button type="submit" class="btn btn-primary mt-2">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Show or hide options based on question type
+        $("#questionType").on("change", function () {
+            const type = $(this).val();
+            if (type === "checkboxes" || type === "radio") {
+                $("#optionsContainer").show();
+            } else {
+                $("#optionsContainer").hide();
+                $("#options").empty(); // Clear options if hidden
+            }
+        });
+
+        // Add new option input
+        $("#addOptionButton").on("click", function () {
+            $("#options").append(`
+                <div class="input-group mb-2">
+                    <!-- New Option Text -->
+                    <input type="text" class="form-control" name="option_text[]" placeholder="Option text" required />
+                    <input type="file" class="form-control" name="option_image[]" accept="image/*" />
+                    <button type="button" class="btn btn-danger remove-option">Remove</button>
+                </div>
+            `);
+
+            $("#options .input-group:last-child input[type='text']").focus();
+
+        });
+
+        // Remove an option input
+        $(document).on("click", ".remove-option", function () {
+            $(this).closest(".input-group").remove();
+        });
+
+        // Delete existing option
+        $(document).on("click", ".delete-existing-option", function () {
+            $(this).closest(".input-group").remove(); // Remove option from DOM
+        });
+
+        // Validate form submission
+        $("form").on("submit", function (e) {
+            const questionType = $("#questionType").val();
+
+            // If checkboxes or radio, validate options
+            if (questionType === "checkboxes" || questionType === "radio") {
+                // const optionCount = $("#options").find("input[name='option_text[]']").length;
+                const existingOptions = $("#options").children().length;
+                if (existingOptions < 2) {
+                    e.preventDefault(); // Stop form submission
+                    alert("Please add at least 2 options for checkboxes or radio question types.");
+                }
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}

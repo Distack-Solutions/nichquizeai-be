@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container nk-content-wrap">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+          <div class="nk-block-head-content">
+            <h3 class="nk-block-title page-title">Quiz: {{ quiz.title }} {% if quiz.is_published %}
+                <span class="badge badge-pill badge-primary text-primary">Published</span>{% endif %}
+            </h3>
+            <div class="nk-block-des text-soft">
+              <p>Add Questions in quiz</p>
+            </div>
+          </div>
+
+          <div class="nk-block-head-content">
+            <div class="toggle-wrap nk-block-tools-toggle">
+              <a
+                href="#"
+                class="btn btn-icon btn-trigger toggle-expand me-n1"
+                data-target="pageMenu"
+                ><em class="icon ni ni-more-v"></em
+              ></a>
+
+              
+              <div class="toggle-expand-content" data-content="pageMenu">
+                <ul class="nk-block-tools g-3">
+                  <li class="nk-block-tools-opt">
+                    {% if not quiz.is_published %}
+                        <a href="{% url 'publish-quiz' quiz.id %}" class="btn btn-primary">
+                            <em class="icon ni ni-check-circle"></em>
+                            <span>Publish Quiz</span>
+                        </a>
+                    {% else %}
+                        <span class="badge badge-pill badge-primary">Published</span>
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="card card-bordered p-4">
+        <form method="post" action="{% url 'add-questions' quiz.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="questionText" class="form-label">Question Text</label>
+              <input type="text" class="form-control" id="questionText" name="question_text" required />
+            </div>
+        
+            <div class="mb-3">
+              <label for="questionType" class="form-label">Question Type</label>
+              <select class="form-select" id="questionType" name="question_type" required>
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="checkboxes">Checkboxes</option>
+                <option value="radio">Radio</option>
+              </select>
+            </div>
+        
+            <div id="optionsContainer" style="display: none;">
+              <label class="form-label d-flex align-items-center">
+                Options
+                <i class="material-icons mx-1" id="addOptionButton">add_circle</i>
+              </label>
+              <div class="mb-3" id="options">
+                <!-- Dynamic options will be added here -->
+              </div>
+            </div>
+        
+            <button type="submit" class="btn btn-primary mt-2">Save Question</button>
+        </form>
+    </div>
+
+    <h3 class="nk-block-title page-title my-4">Existing Questions</h3>
+    <div class="row">
+        {% if not questions %}
+
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex align-items-center bg-white text-secondary">
+                    <p class="text-muted">No question added in this quiz.</p>
+                </div>
+               
+            </div>
+        </div>
+
+        {% endif %}
+
+        {% for question in questions %}
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex align-items-center bg-light text-dark">
+                  <div class="rounded-circle bg-white text-dark d-flex justify-content-center align-items-center me-3" 
+                       style="width: 25px; height: 25px; font-weight: bold;">
+                    {{ forloop.counter }}
+                  </div>
+                  <p class="mb-0">{{ question.question_text }} <span class="badge bg-primary badge-pill badge-green mx-1">{{ question.get_question_type_display }}</span></p>
+
+                    <!-- Edit and Delete Icons -->
+                    <div class="ms-auto">
+                        <a href="{% url 'edit-question' quiz.id question.id %}" class="text-decoration-none me-2">
+                            <i class="material-icons text-primary" style="font-size: 20px;">edit</i>
+                        </a>
+                        <a href="{% url 'delete-question' quiz.id question.id %}" class="text-decoration-none" onclick="return confirm('Are you sure you want to delete this question?');">
+                            <i class="material-icons text-danger" style="font-size: 20px;">delete</i>
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+                   
+                    {% if question.options.all %}
+
+                    <p class="mb-3 fw-bold">Options</p>
+
+                    <ul class="list-group list-group-flush mb-2 border" style="border-radius: 5px;">
+                        {% for option in question.options.all %}
+                        <li class="list-group-item bg-white">
+                            
+                            {% if option.image %}
+                            <img src="{{ option.image.url }}" alt="Option Image" class="img-thumbnail my-2" style="max-width: 150px;">
+                            {% endif %}
+
+                            <p>{{ option.text }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No options available for this question.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    $("#questionType").on("change", function () {
+        const type = $(this).val();
+        if (type === "checkboxes" || type === "radio") {
+            $("#optionsContainer").show();
+        } else {
+            $("#optionsContainer").hide();
+            $("#options").empty(); // Clear options if hidden
+        }
+    });
+
+    $("#addOptionButton").on("click", function () {
+        $("#options").append(`
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" name="option_text[]" placeholder="Option text" required />
+                <input type="file" class="form-control" name="option_image[]" accept="image/*" />
+                <button type="button" class="btn btn-danger remove-option">Remove</button>
+            </div>
+        `);
+
+      // Automatically focus on the newly created text input
+      $("#options .input-group:last-child input[type='text']").focus();
+    });
+
+    $(document).on("click", ".remove-option", function () {
+        $(this).closest(".input-group").remove();
+    });
+
+    // Validate form submission
+    $("form").on("submit", function (e) {
+        const questionType = $("#questionType").val();
+
+        // If checkboxes or radio, validate options
+        if (questionType === "checkboxes" || questionType === "radio") {
+            const optionCount = $("#options").find("input[name='option_text[]']").length;
+
+            if (optionCount < 2) {
+                e.preventDefault(); // Stop form submission
+                alert("Please add at least 2 options for checkboxes or radio question types.");
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

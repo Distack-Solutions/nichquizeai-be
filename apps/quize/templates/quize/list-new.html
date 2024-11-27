@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="nk-content-wrap">
+  <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-between">
+      <div class="nk-block-head-content">
+        <h3 class="nk-block-title page-title">Quiz Management</h3>
+        <div class="nk-block-des text-soft">
+          <p>Manage all quizzes in the system efficiently.</p>
+        </div>
+      </div>
+      <div class="nk-block-head-content">
+        <div class="toggle-wrap nk-block-tools-toggle">
+          <a
+            href="#"
+            class="btn btn-icon btn-trigger toggle-expand me-n1"
+            data-target="pageMenu"
+            ><em class="icon ni ni-more-v"></em
+          ></a>
+          <div class="toggle-expand-content" data-content="pageMenu">
+            <ul class="nk-block-tools g-3">
+              <li class="nk-block-tools-opt">
+                <a href="{% url 'add-quiz' %}" class="btn btn-primary"
+                  ><em class="icon ni ni-plus"></em
+                  ><span>Add New Quiz</span></a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nk-block">
+    <div class="row g-gs">
+      <div class="col-12">
+        <div class="card card-bordered card-full">
+          <div class="card-inner">
+            <div class="card-title-group">
+              <div class="card-title col-6">
+                <div class="dt-search">
+                  <input
+                    type="search"
+                    class="form-control form-control-sm"
+                    id="dt-search-quiz"
+                    placeholder="Search Quizzes"
+                  /><label for="dt-search-quiz"></label>
+                </div>
+              </div>
+              <div class="card-tools">
+                <ul class="card-tools-nav">
+                  <li><a href="#"><span>Active</span></a></li>
+                  <li><a href="#"><span>Inactive</span></a></li>
+                  <li class="active"><a href="#"><span>All</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-inner p-0 border-top">
+            <div class="nk-tb-list nk-tb-orders">
+              <div class="nk-tb-item nk-tb-head">
+                <div class="nk-tb-col"><span>S. No</span></div>
+                <div class="nk-tb-col tb-col-md"><span>Title</span></div>
+                <div class="nk-tb-col tb-col-md"><span>Created On</span></div>
+                <div class="nk-tb-col tb-col-lg"><span>Total Questions</span></div>
+                <div class="nk-tb-col"><span>Status</span></div>
+                <div class="nk-tb-col"><span></span></div>
+              </div>
+
+              {% for quiz in quizzes %}
+              <div class="nk-tb-item">
+                <div class="nk-tb-col">
+                  <span class="tb-lead"><a href="#">{{ forloop.counter }}</a></span>
+                </div>
+                <div class="nk-tb-col tb-col-md">
+                  <span class="tb-sub">
+                    <a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a>
+                  </span>
+                </div>
+                <div class="nk-tb-col tb-col-md">
+                  <span class="tb-sub">{{ quiz.created_at|date:"d/m/Y" }}</span>
+                </div>
+                <div class="nk-tb-col tb-col-lg">
+                  <span class="tb-sub">{{ quiz.questions.all.count }}</span>
+                </div>
+                <div class="nk-tb-col">
+                  <span
+                    class="badge badge-dot badge-dot-xs {% if quiz.is_published %}bg-success{% else %}bg-warning{% endif %}"
+                  >
+                    {% if quiz.is_published %}Published{% else %}Draft{% endif %}
+                  </span>
+                </div>
+                <div class="nk-tb-col nk-tb-col-action">
+                  <div class="dropdown">
+                    <a
+                      class="text-soft dropdown-toggle btn btn-icon btn-trigger"
+                      data-bs-toggle="dropdown"
+                      ><em class="icon ni ni-more-h"></em
+                    ></a>
+                    <div
+                      class="dropdown-menu dropdown-menu-end dropdown-menu-xs"
+                    >
+                      <ul class="link-list-plain">
+                        <li><a href="{% url 'quiz-detail' quiz.id %}">View</a></li>
+                        {% if not quiz.is_published %}
+                            <li><a href="{% url 'publish-quiz' quiz.id %}">Publish</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'add-questions' quiz.id %}">Add Question</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+              <div class="nk-tb-item">
+                <div class="nk-tb-col" colspan="6">
+                  <span class="text-soft">No quizzes available.</span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
