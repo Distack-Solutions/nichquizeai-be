@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+
 # Create your models here.
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -13,8 +14,12 @@ class Quiz(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    category = models.CharField(max_length=255, null=True, blank=True, default="Productivity Quiz")
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.CharField(
+        max_length=255, null=True, blank=True, default="Productivity Quiz"
+    )
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -22,28 +27,24 @@ class Quiz(models.Model):
         return self.title
 
 
-
-
 class Question(models.Model):
-    TEXT = 'text'
-    NUMBER = 'number'
-    CHECKBOXES = 'checkboxes'
-    RADIO = 'radio'
+    TEXT = "text"
+    NUMBER = "number"
+    CHECKBOXES = "checkboxes"
+    RADIO = "radio"
 
     QUESTION_TYPES = [
-        (TEXT, 'Text'),
-        (NUMBER, 'Number'),
-        (CHECKBOXES, 'Checkboxes'),
-        (RADIO, 'Radio'),
+        (TEXT, "Text"),
+        (NUMBER, "Number"),
+        (CHECKBOXES, "Checkboxes"),
+        (RADIO, "Radio"),
     ]
 
     question_text = models.TextField()
-    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default=TEXT)
-    quiz = models.ForeignKey(
-        'Quiz',
-        on_delete=models.CASCADE,
-        related_name='questions'
+    question_type = models.CharField(
+        max_length=20, choices=QUESTION_TYPES, default=TEXT
     )
+    quiz = models.ForeignKey("Quiz", on_delete=models.CASCADE, related_name="questions")
 
     def __str__(self):
         return self.question_text
@@ -51,11 +52,9 @@ class Question(models.Model):
 
 class QuestionOption(models.Model):
     text = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='question_options/', blank=True, null=True)
+    image = models.ImageField(upload_to="question_options/", blank=True, null=True)
     question = models.ForeignKey(
-        'Question',
-        on_delete=models.CASCADE,
-        related_name='options'
+        "Question", on_delete=models.CASCADE, related_name="options"
     )
 
     def __str__(self):
@@ -72,15 +71,9 @@ class Respondent(models.Model):
 
 class Attempt(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    quiz = models.ForeignKey(
-        'Quiz',
-        on_delete=models.CASCADE,
-        related_name='attempts'
-    )
+    quiz = models.ForeignKey("Quiz", on_delete=models.CASCADE, related_name="attempts")
     respondent = models.ForeignKey(
-        'Respondent',
-        on_delete=models.CASCADE,
-        related_name='attempts'
+        "Respondent", on_delete=models.CASCADE, related_name="attempts"
     )
 
     def __str__(self):
@@ -89,19 +82,12 @@ class Attempt(models.Model):
 
 class Response(models.Model):
     answer = models.TextField(blank=True, null=True)
-    selected_option = models.ManyToManyField(
-        'QuestionOption',
-        blank=True
-    )
+    selected_option = models.ManyToManyField("QuestionOption", blank=True)
     question = models.ForeignKey(
-        'Question',
-        on_delete=models.CASCADE,
-        related_name='responses'
+        "Question", on_delete=models.CASCADE, related_name="responses"
     )
     attempt = models.ForeignKey(
-        'Attempt',
-        on_delete=models.CASCADE,
-        related_name='responses'
+        "Attempt", on_delete=models.CASCADE, related_name="responses"
     )
 
     # def clean(self):
@@ -112,3 +98,19 @@ class Response(models.Model):
 
     def __str__(self):
         return f"Response for {self.question} in {self.attempt}"
+
+
+class AIReport(models.Model):
+    attempt = models.ForeignKey(
+        "Attempt", on_delete=models.CASCADE, related_name="report_attempt"
+    )
+    analysis = models.JSONField(null=True)
+    summary = models.JSONField(null=True)
+    score = models.JSONField(null=True)
+    strength = models.JSONField(null=True)
+    weakness = models.JSONField(null=True)
+    long_term_goal = models.JSONField(null=True)
+    short_term_goal = models.JSONField(null=True)
+    conclusion = models.JSONField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)

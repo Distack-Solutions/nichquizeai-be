@@ -100,6 +100,9 @@
               Thank You For Taking This Quiz.
             </h2>
           </div>
+          <a href="{% url 'test_report' request.GET.report %}" class="btn btn-success fw-bold text-white px-4 py-2">
+            View Report
+          </a>
         </div>
       </div>
       {% else %}

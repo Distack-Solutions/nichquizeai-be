@@ -19,4 +19,5 @@ urlpatterns = [
     ),
     path("logout/", views.logout_view, name="logout"),
     path("test/<uuid:id>/", views.test, name="test"),
+    path("test/report/<int:id>/", views.test_report, name="test_report"),
 ]
