@@ -7,4 +7,16 @@ urlpatterns = [
         views.dashboard,
         name="home",
     ),
+    path(
+        "login/",
+        views.login_view,
+        name="login",
+    ),
+    path(
+        "signup/",
+        views.signup_view,
+        name="signup",
+    ),
+    path("logout/", views.logout_view, name="logout"),
+    path("test/<uuid:id>/", views.test, name="test"),
 ]

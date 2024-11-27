@@ -1,0 +1,34 @@
+<div class="d-flex justify-content-between w-100 py-5">
+  <!-- Back Button -->
+  <button
+    @click="prevItem()"
+    class="btn btn-dark rounded-pill px-5"
+    style="background-color: #27272a; color: white; border: none"
+    onmouseover="this.style.backgroundColor='#3f3f46'"
+    onmouseout="this.style.backgroundColor='#27272a'"
+  >
+    Back
+  </button>
+
+  <!-- Next Button -->
+  <button
+    :disabled="checkAnswer()"
+    x-show="currentIndex !== items.length-1"
+    @click="nextItem()"
+    class="btn btn-success rounded-pill px-5"
+    onmouseover="this.style.backgroundColor='#38a169'"
+    onmouseout="this.style.backgroundColor='#48bb78'"
+  >
+    Next
+  </button>
+  <!--submit-->
+  <button
+    x-show="currentIndex === items.length-1"
+    class="btn btn-success rounded-pill px-5"
+    onmouseover="this.style.backgroundColor='#38a169'"
+    onmouseout="this.style.backgroundColor='#48bb78'"
+    @click="set_form_status('submit')"
+  >
+    Next
+  </button>
+</div>

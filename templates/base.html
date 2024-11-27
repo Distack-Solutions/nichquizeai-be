@@ -135,31 +135,30 @@
                                         <div class="dropdown-menu dropdown-menu-md dropdown-menu-end dropdown-menu-s1">
                                             <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
                                                 <div class="user-card">
-                                                    <div class="user-avatar"><span>AB</span></div>
-                                                    <div class="user-info"><span class="lead-text">Abu Bin
-                                                            Ishtiyak</span><span
-                                                            class="sub-text">info@softnio.com</span></div>
+                                                    <div class="user-avatar"><span>{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}</span></div>
+                                                    <div class="user-info"><span class="lead-text">{{request.user.first_name}} {{request.user.last_name}}</span><span
+                                                            class="sub-text">{{request.user.email}}</span></div>
                                                     <div class="user-action"><a class="btn btn-icon me-n2"
-                                                            href="user-profile-setting.html"><em
+                                                            href="#"><em
                                                                 class="icon ni ni-setting"></em></a></div>
                                                 </div>
                                             </div>
                                             <div class="dropdown-inner">
                                                 <ul class="link-list">
-                                                    <li><a href="user-profile-regular.html"><em
+                                                    <li><a href="#"><em
                                                                 class="icon ni ni-user-alt"></em><span>View
                                                                 Profile</span></a></li>
-                                                    <li><a href="user-profile-setting.html"><em
+                                                    <li><a href="#"><em
                                                                 class="icon ni ni-setting-alt"></em><span>Account
                                                                 Setting</span></a></li>
-                                                    <li><a href="user-profile-activity.html"><em
+                                                    <li><a href="#"><em
                                                                 class="icon ni ni-activity-alt"></em><span>Login
                                                                 Activity</span></a></li>
                                                 </ul>
                                             </div>
                                             <div class="dropdown-inner">
                                                 <ul class="link-list">
-                                                    <li><a href="#"><em class="icon ni ni-signout"></em><span>Sign
+                                                    <li><a href="{% url 'logout' %}"><em class="icon ni ni-signout"></em><span>Sign
                                                                 out</span></a></li>
                                                 </ul>
                                             </div>

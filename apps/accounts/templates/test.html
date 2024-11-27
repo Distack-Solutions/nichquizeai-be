@@ -1,0 +1,248 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mindfulness Quiz</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js"
+      defer
+    ></script>
+    <style>
+      /* Container Styling */
+      .health-goals-container {
+        margin: 0 auto;
+
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* Button Styling */
+      .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .goal-item:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+      }
+
+      /* Selected Button */
+      .goal-item.selected {
+        background-color: #ffffff;
+        border: 2px solid #38a169;
+      }
+
+      /* Indicator Styling */
+      .indicator {
+        width: 24px;
+        height: 24px;
+        background-color: #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .selected-indicator {
+        background-color: #38a169;
+        color: white;
+      }
+
+      .checkmark {
+        font-size: 14px;
+      }
+
+      /* Text Styling */
+      .goal-item span {
+        font-size: 16px;
+        color: #495057;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div x-data="handelSubmit()">
+      {% if request.GET.status == 'success' %}
+      <div>
+        <div
+          class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
+        >
+          <!-- Logo -->
+          <div class="mb-4">
+            <img src="{% static "assets/images/logo.png" %}" alt="NutriVein
+            Logo" width="200" height="60" class="img-fluid" />
+          </div>
+
+          <!-- Content -->
+          <div class="text-center mb-4" style="max-width: 600px">
+            <h1 class="text-secondary fw-medium">CONGRATULATIONS!!</h1>
+            <h2 class="text-success fw-medium fs-2 fs-sm-3 fs-lg-1 px-3">
+              Thank You For Taking This Quiz.
+            </h2>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div x-show="form_status === 'init'">
+        <div
+          class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
+        >
+          <!-- Logo -->
+          <div class="mb-4">
+            <img src="{% static "assets/images/logo.png" %}" alt="NutriVein
+            Logo" width="200" height="60" class="img-fluid" />
+          </div>
+
+          <!-- Progress Steps -->
+          <div
+            class="d-flex justify-content-center align-items-center mb-4 w-100"
+            style="max-width: 300px"
+          >
+            <template x-for="(item, index) in items.length-1" :key="index">
+              <div class="d-flex align-items-center">
+                <div
+                  class="d-flex justify-content-center align-items-center rounded-circle border border-success text-success"
+                  style="width: 2rem; height: 2rem"
+                  x-text="index+1"
+                  :class="{'bg-success text-white': index === 0}"
+                >
+                  <!--1-->
+                </div>
+                <div class="bg-success" style="width: 3rem; height: 2px"></div>
+              </div>
+            </template>
+
+            <div class="d-flex align-items-center">
+              <div
+                class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+                style="width: 2rem; height: 2rem"
+                x-text="items.length"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="text-center mb-4" style="max-width: 600px">
+            <h1 class="text-secondary fw-medium">{{quiz.title}}</h1>
+            <h2 class="text-success fw-medium fs-4 fs-sm-3 fs-lg-1 px-3">
+              {{quiz.description}}
+            </h2>
+          </div>
+
+          <!-- CTA Button -->
+
+          <button
+            @click="set_form_status('process')"
+            class="btn btn-success fw-bold text-white px-4 py-2"
+          >
+            TAKE QUIZ NOW!
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+      <div x-show="form_status === 'process'">
+        <template x-for="(item, index) in items" :key="item.id">
+          <div x-show="index === currentIndex">
+            <div x-show="item.type === 'radio' ">
+              {% include "inputs/radio.html" %}
+            </div>
+            <div x-show="item.type === 'text' ">
+              {% include "inputs/text.html" %}
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div x-show="form_status === 'submit'">
+        {% include "inputs/submit.html" %}
+      </div>
+    </div>
+
+    <script>
+      function selectGoal(id) {
+        const items = document.querySelectorAll(".goal-item");
+        const indicators = document.querySelectorAll(".indicator");
+
+        items.forEach((item) => item.classList.remove("selected"));
+        indicators.forEach((indicator) =>
+          indicator.classList.remove("selected-indicator")
+        );
+
+        document
+          .querySelector(`#indicator-${id}`)
+          .classList.add("selected-indicator");
+        document.querySelector(`#indicator-${id}`).innerHTML = "✓";
+        items[id - 1].classList.add("selected");
+      }
+    </script>
+
+    <script>
+      function handelSubmit() {
+        return {
+          items: JSON.parse("{{ question_set|escapejs }}"),
+          currentIndex: 0,
+          form_status: "init", // init| process | submit
+
+          set_form_status(value) {
+            this.form_status = value;
+          },
+          checkAnswer() {
+            const currentItem = this.items[this.currentIndex];
+            if (currentItem.type === "text" && !currentItem.answer) {
+              return true;
+            } else if (currentItem.type === "radio") {
+              // console.log(!currentItem?.selected_option);
+              return true;
+            }
+          },
+
+          set_answer(value) {
+            if (this.items[this.currentIndex].type === "text") {
+              this.items[this.currentIndex].answer = value;
+            } else {
+              this.items[this.currentIndex].selected_option = [value];
+            }
+          },
+
+          // Method to go to the next item
+          nextItem() {
+            if (this.currentIndex < this.items.length - 1) {
+              this.currentIndex++;
+            }
+          },
+
+          // Method to go to the previous item
+          prevItem() {
+            if (this.currentIndex > 0) {
+              this.currentIndex--;
+            }
+          },
+        };
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+{% load static %}
+<div>
+  <!-- Logo -->
+  <div class="my-5 container">
+    <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+    width="200" height="60" class="img-fluid" />
+  </div>
+  <div class="min-vh-100 container w-25 px-3 py-4">
+    <div class="mb-4">
+      <div class="d-flex justify-content-between">
+        <h1 class="fs-4 fw-bold">Please provide the following details</h1>
+      </div>
+    </div>
+    <!-- form -->
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="full_name" class="form-label">Full Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="fullName"
+          name="full_name"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Enter your email address"
+          required
+        />
+      </div>
+      <input type="hidden" name="data" :value="JSON.stringify(items)" />
+      <button
+        class="btn btn-success rounded-pill px-5"
+        onmouseover="this.style.backgroundColor='#38a169'"
+        onmouseout="this.style.backgroundColor='#48bb78'"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

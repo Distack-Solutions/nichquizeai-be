@@ -1,0 +1,391 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mindfulness Quiz</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <style>
+      /* Container Styling */
+      .health-goals-container {
+        margin: 0 auto;
+
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* Button Styling */
+      .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .goal-item:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+      }
+
+      /* Selected Button */
+      .goal-item.selected {
+        background-color: #ffffff;
+        border: 2px solid #38a169;
+      }
+
+      /* Indicator Styling */
+      .indicator {
+        width: 24px;
+        height: 24px;
+        background-color: #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .selected-indicator {
+        background-color: #38a169;
+        color: white;
+      }
+
+      .checkmark {
+        font-size: 14px;
+      }
+
+      /* Text Styling */
+      .goal-item span {
+        font-size: 16px;
+        color: #495057;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div x-data=>
+    {% if active_id == 1 %}
+    <div
+      class="d-flex flex-column min-vh-100 justify-content-center align-items-center bg-white px-3 py-4"
+    >
+      <!-- Logo -->
+      <div class="mb-4">
+        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+        width="200" height="60" class="img-fluid" />
+      </div>
+
+      <!-- Progress Steps -->
+      <div
+        class="d-flex justify-content-center align-items-center mb-4 w-100"
+        style="max-width: 300px"
+      >
+        <div class="d-flex align-items-center">
+          <div
+            class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
+            style="width: 2rem; height: 2rem"
+          >
+            1
+          </div>
+          <div class="bg-success" style="width: 3rem; height: 2px"></div>
+        </div>
+        <div class="d-flex align-items-center">
+          <div
+            class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+            style="width: 2rem; height: 2rem"
+          >
+            2
+          </div>
+          <div class="bg-success" style="width: 3rem; height: 2px"></div>
+        </div>
+        <div class="d-flex align-items-center">
+          <div
+            class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+            style="width: 2rem; height: 2rem"
+          >
+            3
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="text-center mb-4" style="max-width: 600px">
+        <h1 class="text-secondary fw-medium">Mindfulness On Demand</h1>
+        <h2 class="text-success fw-medium fs-4 fs-sm-3 fs-lg-1 px-3">
+          Discover Your 6-Step Personalized Serenity Blueprint
+        </h2>
+      </div>
+
+      <!-- CTA Button -->
+
+        <button
+          type="submit"
+          name="active"
+          value="next"
+          class="btn btn-success fw-bold text-white px-4 py-2"
+        >
+          TAKE QUIZ NOW!
+        </button>
+   
+    </div>
+    {% endif %} 
+    
+    
+    
+    {% if active_id == 2 %}
+    <div>
+      <!-- Logo -->
+      <div class="my-5 container">
+        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+        width="200" height="60" class="img-fluid" />
+      </div>
+      <div class="min-vh-100 container w-50 px-3 py-4">
+        <!-- Progress Steps -->
+        <div class="d-flex mb-4 w-100" style="max-width: 300px">
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              1
+            </div>
+            <div class="bg-success" style="width: 3rem; height: 2px"></div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              2
+            </div>
+            <div class="bg-success" style="width: 3rem; height: 2px"></div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              3
+            </div>
+          </div>
+        </div>
+        <!-- Question -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between">
+            <h1 class="fs-4 fw-bold">How do you usually feel after meals?</h1>
+            <span class="text-danger fs-6">(Required)</span>
+          </div>
+          <p class="text-muted">Select one option.</p>
+        </div>
+        <!--option-->
+        <div class="d-flex">
+          <!--cart 1-->
+          <div
+            class="card position-relative w-400px h-400px bg-light d-flex align-items-center justify-content-center p-3"
+          >
+            <div class="position-relative">
+              <!-- Clock Circle -->
+              <img
+                src="https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1"
+                width="100"
+                height="100"
+                alt=""
+                srcset=""
+              />
+            </div>
+          </div>
+        </div>
+
+        <!--cta-->
+
+          <!-- Back Button -->
+          <button
+          type="submit"
+          name="active"
+          value="prev"
+            class="btn btn-dark fw-bold text-white px-4 py-2"
+            style="background-color: #27272a; color: white; border: none"
+            onmouseover="this.style.backgroundColor='#3f3f46'"
+            onmouseout="this.style.backgroundColor='#27272a'"
+          >
+            Back
+          </button>
+
+          <!-- Next Button -->
+          <button
+          type="submit"
+          name="active"
+          value="next"
+            class="btn btn-success fw-bold text-white px-4 py-2"
+            onmouseover="this.style.backgroundColor='#38a169'"
+            onmouseout="this.style.backgroundColor='#48bb78'"
+          >
+            Next
+     
+        </div>
+        
+      </div>
+      
+    </div>
+    {% endif %}
+
+
+
+    {% if active_id == 3 %}
+    <div>
+      <!-- Logo -->
+      <div class="my-5 container">
+        <img src="{% static "assets/images/logo.png" %}" alt="NutriVein Logo"
+        width="200" height="60" class="img-fluid" />
+      </div>
+      <div class="min-vh-100 container w-50 px-3 py-4">
+        <!-- Progress Steps -->
+        <div class="d-flex mb-4 w-100" style="max-width: 300px">
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center bg-success text-white rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              1
+            </div>
+            <div class="bg-success" style="width: 3rem; height: 2px"></div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              2
+            </div>
+            <div class="bg-success" style="width: 3rem; height: 2px"></div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div
+              class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+              style="width: 2rem; height: 2rem"
+            >
+              3
+            </div>
+          </div>
+        </div>
+        <!-- Question -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between">
+            <h1 class="fs-4 fw-bold">How do you usually feel after meals?</h1>
+            <span class="text-danger fs-6">(Required)</span>
+          </div>
+          <p class="text-muted">Select one option.</p>
+        </div>
+        <!--option-->
+        <div class="health-goals-container">
+          <!-- Goal 1 -->
+          <button class="goal-item" onclick="selectGoal(1)">
+            <div class="indicator" id="indicator-1"></div>
+            <span>Maintaining steady energy throughout the day.</span>
+          </button>
+
+          <!-- Goal 2 -->
+          <button class="goal-item" onclick="selectGoal(2)">
+            <div class="indicator" id="indicator-2"></div>
+            <span>Managing my weight in a healthy and sustainable way.</span>
+          </button>
+
+          <!-- Goal 3 -->
+          <button class="goal-item selected" onclick="selectGoal(3)">
+            <div class="indicator selected-indicator" id="indicator-3">
+              <span class="checkmark">✓</span>
+            </div>
+            <span>Improving my digestion and reducing bloating.</span>
+          </button>
+
+          <!-- Goal 4 -->
+          <button class="goal-item" onclick="selectGoal(4)">
+            <div class="indicator" id="indicator-4"></div>
+            <span
+              >Supporting long-term health, like heart and blood sugar
+              balance.</span
+            >
+          </button>
+        </div>
+
+        <!--cta-->
+        <div class="d-flex justify-content-between w-100 py-5">
+          <!-- Back Button -->
+          <button
+            class="btn btn-dark rounded-pill px-5"
+            style="background-color: #27272a; color: white; border: none"
+            onmouseover="this.style.backgroundColor='#3f3f46'"
+            onmouseout="this.style.backgroundColor='#27272a'"
+          >
+            Back
+          </button>
+
+          <!-- Next Button -->
+          <button
+            class="btn btn-success rounded-pill px-5"
+            onmouseover="this.style.backgroundColor='#38a169'"
+            onmouseout="this.style.backgroundColor='#48bb78'"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+
+    <script>
+      function selectGoal(id) {
+        const items = document.querySelectorAll(".goal-item");
+        const indicators = document.querySelectorAll(".indicator");
+
+        items.forEach((item) => item.classList.remove("selected"));
+        indicators.forEach((indicator) =>
+          indicator.classList.remove("selected-indicator")
+        );
+
+        document
+          .querySelector(`#indicator-${id}`)
+          .classList.add("selected-indicator");
+        document.querySelector(`#indicator-${id}`).innerHTML = "✓";
+        items[id - 1].classList.add("selected");
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.js"></script>
+    <script>
+        function handelData(){
+            items: [{id:1, text:'aaa'}, {id:2, text:'bbb'}, {id:3, text:'ccc'}],
+            currentIndex: 0,
+            nextItem() {
+                if (this.currentIndex < this.items.length - 1) {
+                    this.currentIndex++;
+                }
+            },
+            prevItem() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                }
+            }
+        }
+    </script>
+  </body>
+</html>

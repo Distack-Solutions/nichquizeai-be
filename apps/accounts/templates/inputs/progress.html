@@ -1,0 +1,25 @@
+<div class="d-flex mb-4 w-100" style="max-width: 300px">
+  <template x-for="(item, index) in items.length-1" :key="index">
+    <div class="d-flex align-items-center">
+      <div
+        class="d-flex justify-content-center align-items-center  rounded-circle border border-success text-success"
+        style="width: 2rem; height: 2rem"
+        :class="{'bg-success text-white': index <= currentIndex}"
+        x-text="index+1"
+      >
+        1
+      </div>
+      <div class="bg-success" style="width: 3rem; height: 2px"></div>
+    </div>
+  </template>
+  <div class="d-flex align-items-center">
+    <div
+      class="d-flex justify-content-center align-items-center border border-success text-success rounded-circle"
+      style="width: 2rem; height: 2rem"
+      x-text="items.length"
+      :class="{'bg-success text-white': currentIndex === items.length-1}"
+    >
+      3X
+    </div>
+  </div>
+</div>
