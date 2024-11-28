@@ -1,0 +1,57 @@
+{
+  "longevity_score": {
+    "score": 75,
+    "category": "Needs Improvement",
+    "summary": "Your health is generally good, but there are areas that could be optimized for better overall wellness."
+  },
+  "personalized_roadmap": {
+    "morning_routine": [
+      {
+        "title": "Hydration Kickstart",
+        "description": "Start your morning with a glass of water to rehydrate your body after sleep."
+      },
+      {
+        "title": "Nutrient-Rich Breakfast",
+        "description": "Consider a healthier breakfast option, incorporating fruits, whole grains, or proteins instead of biryani."
+      }
+    ],
+    "midday_strategies": [
+      {
+        "title": "Balanced Lunch",
+        "description": "Opt for a balanced meal that includes proteins, healthy fats, and vegetables to sustain your energy."
+      },
+      {
+        "title": "Stretch Breaks",
+        "description": "Take a 5-minute stretch break every hour to improve circulation and reduce tension."
+      }
+    ],
+    "evening_habits": [
+      {
+        "title": "Wind Down Routine",
+        "description": "Incorporate a relaxing evening routine to prepare for restful sleep, such as reading or meditation."
+      },
+      {
+        "title": "Limit Screen Time",
+        "description": "Reduce screen time at least an hour before bed to enhance sleep quality."
+      }
+    ],
+    "specific_lifestyle_tips": [
+      {
+        "tip": "Experiment with healthier breakfast recipes that focus on whole foods."
+      },
+      {
+        "tip": "Track your food intake to see where you can make healthier choices."
+      }
+    ]
+  },
+  "product_recommendation": {
+    "product_name": "Water Infuser Bottle",
+    "benefits": [
+      "Encourages you to drink more water by infusing it with fruits",
+      "Enhances the flavor of water, making hydration more enjoyable",
+      "Easy to carry and suitable for on-the-go hydration"
+    ],
+    "usage_instructions": "Fill the infuser with your favorite fruits (like lemon or berries) and add water. Let it sit for at least 30 minutes before drinking."
+  },
+  "encouragement": "Every small step you take in your health journey counts! Keep pushing towards a balanced lifestyle."
+}

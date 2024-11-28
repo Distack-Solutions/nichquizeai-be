@@ -112,13 +112,14 @@ class AIReport(models.Model):
     attempt = models.ForeignKey(
         "Attempt", on_delete=models.CASCADE, related_name="report_attempt"
     )
-    analysis = models.JSONField(null=True)
-    summary = models.JSONField(null=True)
-    score = models.JSONField(null=True)
-    strength = models.JSONField(null=True)
-    weakness = models.JSONField(null=True)
-    long_term_goal = models.JSONField(null=True)
-    short_term_goal = models.JSONField(null=True)
-    conclusion = models.JSONField(null=True)
+    analysis_report = models.JSONField(null=True)
+    # summary = models.JSONField(null=True)
+    # score = models.JSONField(null=True)
+    # strength = models.JSONField(null=True)
+    # weakness = models.JSONField(null=True)
+    # long_term_goal = models.JSONField(null=True)
+    # short_term_goal = models.JSONField(null=True)
+    # conclusion = models.JSONField(null=True)
+
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

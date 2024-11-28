@@ -30,30 +30,30 @@ def dashboard(request):
     published_quizzes = Quiz.objects.filter(is_published=True).count()
     total_respondents = Respondent.objects.count()
     total_attempts = Attempt.objects.count()
-    recent_attempts = Attempt.objects.order_by('-created_at')[:5]
-    
+    recent_attempts = Attempt.objects.order_by("-created_at")[:5]
+
     # Group attempts by date
     attempts_by_date = (
-        Attempt.objects.annotate(day=TruncDay('created_at'))
-        .values('day')
-        .annotate(total=Count('id'))
-        .order_by('day')
+        Attempt.objects.annotate(day=TruncDay("created_at"))
+        .values("day")
+        .annotate(total=Count("id"))
+        .order_by("day")
     )
-    
+
     # Prepare data for the chart
-    chart_labels = [entry['day'].strftime('%d %b') for entry in attempts_by_date]
-    chart_data = [entry['total'] for entry in attempts_by_date]
+    chart_labels = [entry["day"].strftime("%d %b") for entry in attempts_by_date]
+    chart_data = [entry["total"] for entry in attempts_by_date]
 
     context = {
-        'total_quizzes': total_quizzes,
-        'published_quizzes': published_quizzes,
-        'total_respondents': total_respondents,
-        'total_attempts': total_attempts,
-        'recent_attempts': recent_attempts,
-        'chart_labels': chart_labels,
-        'chart_data': chart_data,
+        "total_quizzes": total_quizzes,
+        "published_quizzes": published_quizzes,
+        "total_respondents": total_respondents,
+        "total_attempts": total_attempts,
+        "recent_attempts": recent_attempts,
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
     }
-    return render(request, 'index.html', context)
+    return render(request, "index.html", context)
 
 
 def login_view(request):
@@ -139,58 +139,33 @@ def test(request, id):
         respondent, create = Respondent.objects.get_or_create(
             email=email, defaults={"full_name": full_name}
         )
-        
 
         # Attempt
         attempt = Attempt.objects.create(quiz=quiz, respondent=respondent)
 
-        questions_and_answers = []
         for item in response_data:
             question = Question.objects.get(id=item.get("id"))
-            _qa = {"question": question.question_text, "answer": ""}
             if item.get("type") == "text":
                 response = Response.objects.create(question=question, attempt=attempt)
                 answer = item.get("answer")
-                _qa["answer"] = answer
                 response.answer = answer
 
             elif item.get("type") == "radio":
                 selected_option = QuestionOption.objects.filter(
                     id__in=item.get("selected_option")
                 )
-                options_list = list(selected_option.values_list("text", flat=True))
-
-                _qa["answer"] = ", ".join(options_list)
                 response.selected_option.set(selected_option)
 
-            questions_and_answers.append(_qa)
             response.save()
 
-        survey_title = quiz.title
-        survey_category = quiz.category
-        # print(questions_and_answers)
-        _ = AnalysisResponse(survey_title, survey_category, questions_and_answers)
-        _.generate_prompt()
-        _.call_openapi()
-        api_data = _.get_results()
-        analysis = api_data["analysis"]
-        summary = api_data["summary"]
-        score = api_data["score"]
-        strength = api_data["strength"]
-        weakness = api_data["weakness"]
-        long_term_goal = api_data["long_term_goal"]
-        short_term_goal = api_data["short_term_goal"]
-        conclusion = api_data["conclusion"]
+        #
+
+        alalysis = AnalysisResponse(attempt.id)
+        alalysis.init_prompt()
+        analysis_report = alalysis.call_openapi()
+
         report = AIReport.objects.create(
-            attempt=attempt,
-            analysis=analysis,
-            summary=summary,
-            score=score,
-            strength=strength,
-            weakness=weakness,
-            long_term_goal=long_term_goal,
-            short_term_goal=short_term_goal,
-            conclusion=conclusion,
+            analysis_report=analysis_report, attempt=attempt
         )
         url = reverse("test", kwargs={"id": id})
         return redirect(f"{url}?status=success&report={report.id}")
@@ -200,3 +175,14 @@ def test(request, id):
 def test_report(request, id):
     context = {"report": AIReport.objects.get(id=id)}
     return render(request, "report.html", context=context)
+
+
+from django.http import HttpResponse
+
+
+def playground(request):
+    alalysis = AnalysisResponse("b7fb6d64-6343-468a-b1cb-9da71e37cd41")
+    alalysis.init_prompt()
+    # _ = alalysis.call_openapi()
+    # print(_)
+    return HttpResponse("OK")
