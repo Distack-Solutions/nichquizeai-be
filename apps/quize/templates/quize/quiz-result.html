@@ -3,7 +3,6 @@
 {% block content %}
 
 <div class="nk-content-wrap">
-
     <div class="container text-center">
         <img src="{% static 'assets/images/logo.png' %}" alt="">
 
@@ -12,9 +11,7 @@
             <h3 class="text-primary my-4">Thank you for taking the quiz!</h3>
             <p class="text-muted mb-4">Your results are being generated. Please wait a moment...</p>
             
-            <!-- Bootstrap 5 loader animation and status messages -->
             <div id="loader-container">
-                <!-- Bootstrap 5 Spinner -->
                 <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -27,18 +24,21 @@
                 <h4>Your AI-generated result:</h4>
                 <p>Your personalized blueprint is ready! Check your results below:</p>
                 <div id="ai-result">
-                    <!-- Placeholder for AI-generated output -->
                     <p>Loading your result...</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="container mt-5">
+        <div id="target-container"></div>
+    </div>
 </div>
 
 <script>
     $(document).ready(function() {
-        // Simulate the step-by-step loading process
+        var attempt_id = "{{ attempt_id }}";  // Ensure attempt_id is passed from the Django view
+
         const messages = [
             "Evaluating your responses...",
             "Calculating your score...",
@@ -48,21 +48,100 @@
 
         let step = 0;
 
-        // Function to update the status messages
         function updateStatus() {
             if (step < messages.length) {
                 $('#status-message').html('<p>' + messages[step] + '</p>');
                 step++;
-            } else {
-                // Once the steps are done, hide the loader and show the AI result
-                $('#loader-container').hide();
-                $('#generated-output').show();
-                $('#ai-result').html("<p>Your AI-generated blueprint is now ready. Thank you for your patience!</p>");
             }
         }
 
-        // Start the step-by-step status update every 3 seconds
-        setInterval(updateStatus, 3000);
+        var statusInterval = setInterval(updateStatus, 3000);
+
+        $.ajax({
+            url: "{% url 'generate-ai-report' %}",
+            type: "GET",
+            data: { "attempt_id": attempt_id },
+            success: function(response) {
+                clearInterval(statusInterval); // Stop the loading messages
+                $('#loader-container').hide();
+                $('#generated-output').show();
+                $('#ai-result').html("<p></p>");
+
+                // Inject the HTML result
+                $('#target-container').html(response.result);
+
+                // Render charts using the received performance analytics data
+                renderCharts(response.performance_analytics);
+
+                // Smooth scroll to target-container
+                document.getElementById('target-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start' // Scroll to the top of the target container
+                });
+            },
+            error: function(xhr, status, error) {
+                clearInterval(statusInterval);
+                $('#loader-container').hide();
+                $('#generated-output').show();
+                $('#ai-result').html("<p>Sorry, something went wrong. Please try again later.</p>");
+            }
+        });
+
+        function renderCharts(performanceAnalytics) {
+            const chartColors = [
+                '#C7B3E5', '#FBBF93', '#A3D9A5', '#6EC1E4', '#B9E6DC',
+                '#F28B82', '#FFF4B5'
+            ];
+
+            performanceAnalytics.forEach((metric, index) => {
+                const ctxDoughnut = document.getElementById('doughnutChart' + (index + 1)).getContext('2d');
+                new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Achieved', 'Remaining'],
+                        datasets: [{
+                            data: [metric.score.value, metric.score.max_value - metric.score.value],
+                            backgroundColor: [chartColors[index], '#e0e0e0'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Optionally: Create a performance chart (bar chart)
+            const ctxBar = document.getElementById('performanceChart').getContext('2d');
+            const performanceData = {
+                labels: performanceAnalytics.map(metric => metric.param_name),
+                datasets: [{
+                    label: 'Performance Scores',
+                    data: performanceAnalytics.map(metric => metric.score.value),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: performanceData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
     });
 </script>
 

@@ -1,0 +1,93 @@
+{
+  "title": "Syed Maaz Hassan's Sleep Health Roadmap",
+  "description": "Thank you, Syed Maaz Hassan, for taking the Sleep Habits Quiz! Your commitment to understanding and improving your sleep routine is a great step towards better health and wellness. Let's explore your results and see how we can enhance your sleep quality!",
+  "performance_analytics": [
+    {
+      "param_name": "Bedtime Consistency",
+      "param_description": "Going to bed at a consistent time helps regulate your body's internal clock for better sleep quality.",
+      "score": {
+        "value": 8,
+        "max_value": 10
+      }
+    },
+    {
+      "param_name": "Sleep Duration",
+      "param_description": "Getting more than 8 hours of sleep is ideal for most adults and supports overall health.",
+      "score": {
+        "value": 9,
+        "max_value": 10
+      }
+    },
+    {
+      "param_name": "Sleep Disruptors",
+      "param_description": "Screen time before bed can significantly impact your ability to fall asleep and the quality of your sleep.",
+      "score": {
+        "value": 4,
+        "max_value": 10
+      }
+    },
+    {
+      "param_name": "Sleep Quality",
+      "param_description": "Waking up sometimes feeling unrested indicates potential sleep quality issues.",
+      "score": {
+        "value": 5,
+        "max_value": 10
+      }
+    }
+  ],
+  "sections": [
+    {
+      "title": "Optimize Your Sleep Environment",
+      "steps": [
+        {
+          "title": "Limit Screen Time Before Bed",
+          "description": "Aim to avoid screens at least 30 minutes before bedtime to help your body wind down."
+        },
+        {
+          "title": "Create a Comfortable Sleep Space",
+          "description": "Ensure your bedroom is cool, dark, and quiet to promote better sleep."
+        }
+      ]
+    },
+    {
+      "title": "Enhance Your Bedtime Routine",
+      "steps": [
+        {
+          "title": "Establish a Calming Pre-Sleep Routine",
+          "description": "Engage in relaxing activities such as reading or taking a warm bath before bed."
+        },
+        {
+          "title": "Maintain Consistent Sleep Schedule",
+          "description": "Try to go to bed and wake up at the same time every day, even on weekends."
+        }
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "insight": "Incorporating relaxation techniques before bed, such as meditation or gentle stretches, can improve your ability to fall asleep."
+    },
+    {
+      "insight": "Keeping a sleep diary may help identify patterns or habits affecting your sleep quality."
+    }
+  ],
+  "product_recommendation": [
+    {
+      "product_key": "berberine_cinnamon",
+      "benefits": [
+        "Supports your overall health by promoting cardiovascular and immune function.",
+        "May help improve metabolic health, which can enhance your energy levels and overall well-being."
+      ],
+      "usage_instructions": "Take one capsule with a meal daily for optimal benefits."
+    },
+    {
+      "product_key": "vitamin_c",
+      "benefits": [
+        "Boosts immune health, which is essential for recovering from any sleep-related issues.",
+        "Promotes overall wellness, potentially improving your energy levels and mood."
+      ],
+      "usage_instructions": "Take one capsule daily with food."
+    }
+  ],
+  "encouragement": "Remember, small changes can have a big impact on your sleep quality. Stay committed to your sleep wellness journey!"
+}

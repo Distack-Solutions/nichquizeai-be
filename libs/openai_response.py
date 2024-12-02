@@ -14,134 +14,100 @@ ASSISTANT_ID = os.environ["ASSISTANT_ID"]
 SCHEMA = {
     "type": "object",
     "properties": {
-        "title": {"type": "string", "description": "the title of road map"},
-        "description": {"type": "string", "description": "the description of road map"},
-        "longevity_score": {
-            "type": "object",
-            "properties": {
-                "score": {
-                    "type": "number",
-                    "description": "Overall health score based on quiz results",
-                },
-                "category": {
-                    "type": "string",
-                    "description": "Category of health status, e.g., Balanced, Needs Improvement",
-                },
-                "summary": {
-                    "type": "string",
-                    "description": "High-level summary of the user's health status",
-                },
-            },
-            "required": ["score", "category", "summary"],
-        },
-        "personalized_roadmap": {
-            "type": "object",
-            "properties": {
-                "morning_routine": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Name of the step in the morning routine",
-                            },
-                            "description": {
-                                "type": "string",
-                                "description": "Details about the step and how it helps",
-                            },
-                        },
-                        "required": ["title", "description"],
+        "title": {"type": "string", "description": "The title of the roadmap"},
+        "roadmap_description": {"type": "string", "description": "Description of the roadmap starting with thanking user to take this quiz"},
+        "performance_analytics": {
+            "type": "array",
+            "description": "Performance metrics based on quiz results",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "param_name": {
+                        "type": "string",
+                        "description": "The name of the performance parameter, e.g., 'Sleep Quality' or 'Stress Level'"
                     },
-                },
-                "midday_strategies": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Name of the midday strategy",
-                            },
-                            "description": {
-                                "type": "string",
-                                "description": "Details about the strategy and its benefits",
-                            },
-                        },
-                        "required": ["title", "description"],
+                    "param_description": {
+                        "type": "string",
+                        "description": "Detailed description of the parameter"
                     },
-                },
-                "evening_habits": {
-                    "type": "array",
-                    "items": {
+                    "score": {
                         "type": "object",
+                        "description": "Scoring details",
                         "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Name of the evening habit",
+                            "value": {
+                                "type": "number",
+                                "description": "The score for this parameter"
                             },
-                            "description": {
-                                "type": "string",
-                                "description": "Details about the habit and how it supports health",
-                            },
-                        },
-                        "required": ["title", "description"],
-                    },
-                },
-                "specific_lifestyle_tips": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "tip": {
-                                "type": "string",
-                                "description": "Specific lifestyle tip for the user",
+                            "max_value": {
+                                "type": "number",
+                                "description": "The maximum possible score for this parameter"
                             }
                         },
-                        "required": ["tip"],
-                    },
+                        "required": ["value", "max_value"]
+                    }
                 },
-            },
-            "required": [
-                "morning_routine",
-                "midday_strategies",
-                "evening_habits",
-                "specific_lifestyle_tips",
-            ],
+                "required": ["param_name", "param_description", "score"]
+            }
+        },
+        "sections": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string", "description": "Title of the section"},
+                    "steps": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {"type": "string", "description": "Name of the step"},
+                                "description": {"type": "string", "description": "Details about the step"}
+                            },
+                            "required": ["title", "description"]
+                        }
+                    }
+                },
+                "required": ["title", "steps"]
+            }
+        },
+        "insights": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "insight": {"type": "string", "description": "General insight or tip based on quiz results"}
+                },
+                "required": ["insight"]
+            }
         },
         "product_recommendation": {
-            "type": "object",
-            "properties": {
-                "product_name": {
-                    "type": "string",
-                    "description": "Name of the recommended product",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "product_name": {"type": "string", "description": "Name of the product"},
+                    "benefits": {"type": "array", "items": {"type": "string", "description": "Product benefits"}},
+                    "usage_instructions": {"type": "string", "description": "How to use the product"}
                 },
-                "benefits": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "description": "List of benefits of the recommended product",
-                    },
-                },
-                "usage_instructions": {
-                    "type": "string",
-                    "description": "How to use the product effectively",
-                },
-            },
-            "required": ["product_name", "benefits", "usage_instructions"],
+                "required": ["product_name", "benefits", "usage_instructions"]
+            }
         },
         "encouragement": {
             "type": "string",
-            "description": "Motivational message to inspire the user on their wellness journey",
-        },
+            "description": "Motivational message to inspire the user on their journey"
+        }
     },
     "required": [
-        "longevity_score",
-        "personalized_roadmap",
+        "title", 
+        "roadmap_description",
+        "performance_analytics",
+        "sections",
+        "insights",
         "product_recommendation",
-        "encouragement",
-    ],
+        "encouragement"
+    ]
 }
+
 
 
 class AnalysisResponse:
@@ -183,14 +149,8 @@ class AnalysisResponse:
 
     def call_openapi(self):
         # Define your prompt
-        prompt = f"""
-        You are an expert in health and wellness. Analyze the provided quiz data and generate a personalized roadmap.
-
-        SURVEY TITLE: {self.survey_title}
-        SURVEY DESCRIPTION: {self.survey_description}
-        USER QUESTION AND ANSWERS.:
-        {self.user_response}
-        """
+        prompt = ""
+        
 
         # Make the request
         response = client.chat.completions.create(

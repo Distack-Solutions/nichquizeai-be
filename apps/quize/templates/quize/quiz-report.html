@@ -1,0 +1,146 @@
+<div class="my-5 py-2">
+  <hr>
+</div>
+
+<div class="mt-5">
+  <!-- Title and Description -->
+  <div class="my-4">
+    <h1 class="display-5 mb-5">Roadmap</h1>
+
+    <div class="border-primary bg-light mt-4" style="padding: 40px; border-left: solid 6px #878789;">
+        <h3 class="">{{ roadmap.title }}</h3>
+        <p class="lead mt-3">{{ roadmap.description }}</p>    
+    </div>
+  </div>
+
+  <!-- Performance Analytics Section -->
+  <div class="my-5">
+    <h3 class="mb-3"> 
+      <i class="material-icons me-2 fs-1">query_stats</i>  
+      Performance Analytics</h3>
+
+    <div class="row">
+      {% for metric in roadmap.performance_analytics %}
+      <div class="col-sm-3 mb-4">
+        <div class="card text-left border-0">
+          <div class="card-body">
+
+            <canvas id="doughnutChart{{ forloop.counter }}"></canvas>
+            
+            <div class="text-center">
+                <h5 class="mt-3">{{ metric.param_name }}</h5>
+                <p>{{ metric.param_description }}</p>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="row d-none">
+      <div class="col-md-6">
+        <canvas id="performanceChart"></canvas>
+      </div>
+      <div class="col-md-6">
+        <ul class="list-group">
+          {% for metric in roadmap.performance_analytics %}
+          <li class="list-group-item">
+            <h5>{{ metric.param_name }}</h5>
+            <p>{{ metric.param_description }}</p>
+            <p><strong>Score:</strong> {{ metric.score.value }}/{{ metric.score.max_value }}</p>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <div class="mb-5">
+    <h3 class="mb-3">
+      <i class="material-icons me-2 fs-1">where_to_vote</i>  
+      Your Personalized Wellness Roadmap Checklist</h3>
+    {% for section in roadmap.sections %}
+    <div class="card my-5 p-0 border-0">
+      <div class="card-body p-0">
+        <h4>{{ section.title }}</h4>
+
+        <ul class="list-group mt-4">
+          {% for step in section.steps %}
+          <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+            <div>
+              <strong>{{ step.title }}:</strong> {{ step.description }}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Insights -->
+  <div class="mb-5">
+    <h3 class="mb-3">
+      <i class="material-icons me-2 fs-1">verified</i>  
+      Insights</h3>
+    <ul class="list-group">
+      {% for insight in roadmap.insights %}
+      <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+        <i class="material-icons me-2 text-warning">lightbulb</i>
+        {{ insight.insight }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Product Recommendations -->
+  <!-- Product Recommendations -->
+  <div class="mb-5">
+    <h3 class="mb-5">Product Recommendations</h3>
+    {% for product in roadmap.product_recommendation %}
+    <div class="card mb-3 shadow radius-lg border border-radius p-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <!-- Product Image -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <img src="{{ product.product_object.thumbnail }}" alt="{{ product.product_object.title }}" class="img-fluid rounded" />
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-md-8">
+                    <h4 class="mb-4">{{ product.product_object.title }}</h4>
+
+                    <h6 class="mb-3 text-secondary">Why This Product Works for You</h6>
+                    <ul class="list-group">
+                        {% for benefit in product.benefits %}
+                        <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+                            <i class="material-icons me-2 text-primary">check_circle</i>
+                            {{ benefit }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6 class="my-3 text-secondary">How to use</h6>
+                    <p class="lead">{{ product.usage_instructions }}</p>
+
+                    <!-- Button for buying the product -->
+                    <a href="{{ product.product_object.link }}" class="btn btn-primary mt-0 fs-5 p-3" target="_blank">Get Product</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+  
+
+  <div class="border-primary bg-light my-4" style="padding: 40px; border-left: solid 6px #878789;">
+      <h3 class="">Encouragement for Your Journey</h3>
+      <p class="lead mt-3">{{ roadmap.encouragement }}</p>    
+  </div>
+
+</div>
+

@@ -1,3 +1,4 @@
+from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 
@@ -20,6 +21,39 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from functools import wraps
+
+
+
+def handle_object_not_found(model, param_name, url_name='quize_list', message="The requested object does not exist."):
+    """
+    A decorator to handle get_object_or_404 exceptions and redirect the user.
+
+    :param model: The model class to query.
+    :param param_name: The name of the URL parameter to use for querying.
+    :param url_name: The name of the URL to redirect to in case of an error.
+    :param message: The error message to display to the user.
+    """
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            obj_id = kwargs.get(param_name)  # Fetch the ID from URL parameters
+            if not obj_id:
+                messages.error(request, f"Invalid URL parameter: {param_name}")
+                return redirect(url_name)
+            try:
+                obj = get_object_or_404(model, id=obj_id)
+            except Exception:
+                messages.error(request, message)
+                return redirect(url_name)
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+
+
 
 @method_decorator(login_required, name="dispatch")
 class QuizListView(ListView):
@@ -52,6 +86,7 @@ class QuizListView(ListView):
 
 
 @login_required
+@handle_object_not_found(Quiz, 'quiz_id')
 def quiz_detail(request, quiz_id):
     # Get the quiz instance by UUID (or return a 404 if not found)
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -77,8 +112,6 @@ def create_quiz(request):
         description = request.POST.get("description")
         category = request.POST.get("category", "Productivity Quiz")
         
-
-
         quiz = Quiz.objects.create(
             title=title,
             description=description,
@@ -95,6 +128,7 @@ def create_quiz(request):
 
 
 @login_required
+@handle_object_not_found(Quiz, 'quiz_id')
 def update_quiz_info(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
 
@@ -118,6 +152,7 @@ def update_quiz_info(request, quiz_id):
 
 
 @login_required
+@handle_object_not_found(Quiz, 'quiz_id')
 def publish_quiz(request, quiz_id):
     # Fetch the quiz object
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -125,8 +160,8 @@ def publish_quiz(request, quiz_id):
 
 
     # Check if the quiz has at least 3 questions
-    if quiz.questions.count() < 1:
-        messages.error(request, "The quiz must have at least 1 question to be published.")
+    if quiz.questions.count() < 3:
+        messages.error(request, "The quiz must have at least 3 question to be published.")
         if redirect_view in ['add-questions', 'quiz-detail']:
             return redirect(redirect_view, quiz_id=quiz.id)
         return redirect('add-questions', quiz_id=quiz.id)
@@ -139,6 +174,7 @@ def publish_quiz(request, quiz_id):
 
 
 @login_required
+@handle_object_not_found(Quiz, 'quiz_id')
 def add_questions(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
 
@@ -177,8 +213,12 @@ def add_questions(request, quiz_id):
 
 @login_required
 def edit_question(request, quiz_id, question_id):
-    quiz = get_object_or_404(Quiz, id=quiz_id)
-    question = get_object_or_404(Question, id=question_id, quiz=quiz)
+    try:
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        question = get_object_or_404(Question, id=question_id, quiz=quiz)
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect("quize_list")
 
     if request.method == "POST":
         # Update Question Basic Info
@@ -219,8 +259,12 @@ def edit_question(request, quiz_id, question_id):
 
 @login_required
 def delete_question(request, quiz_id, question_id):
-    quiz = get_object_or_404(Quiz, id=quiz_id)
-    question = get_object_or_404(Question, id=question_id, quiz=quiz)
+    try:
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        question = get_object_or_404(Question, id=question_id, quiz=quiz)
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('quize_list')
     
     question.delete()
     messages.success(request, "Question deleted successfully.")
@@ -228,6 +272,7 @@ def delete_question(request, quiz_id, question_id):
 
 
 @login_required
+@handle_object_not_found(Quiz, 'quiz_id')
 def delete_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     
@@ -236,7 +281,7 @@ def delete_quiz(request, quiz_id):
     return redirect('quize_list') 
 
 
-
+@handle_object_not_found(Quiz, 'quiz_id')
 def attempt_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     context = {
@@ -245,7 +290,7 @@ def attempt_quiz(request, quiz_id):
     return render(request, "quize/attempt-quiz.html", context)
 
 
-
+@handle_object_not_found(Quiz, 'quiz_id')
 def start_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     context = {
@@ -257,12 +302,11 @@ def start_quiz(request, quiz_id):
 
 
 @require_POST
+@handle_object_not_found(Quiz, 'quiz_id')
 def submit_quiz(request, quiz_id):
     import json
     # Get the quiz object
     quiz = Quiz.objects.get(id=quiz_id)
-
-    print(json.dumps(request.POST, indent=4))
 
     # Check if the respondent exists (e.g., from a previous session or create a new one)
     email = request.POST.get('email')  # Assuming email is passed with the form data
@@ -316,23 +360,43 @@ def submit_quiz(request, quiz_id):
     return redirect('quiz-results', attempt_id=attempt.id)
 
 
-
+@handle_object_not_found(Attempt, 'attempt_id')
 def quiz_results(request, attempt_id):
-    return render(request, "quize/quiz-result.html")
+    context = {'attempt_id': attempt_id}
+    return render(request, "quize/quiz-result.html", context)
 
-
-
-def quiz_attempt_detail(request, quiz_id, attempt_id):
-    # Fetch the quiz object using the quiz_id
-    quiz = get_object_or_404(Quiz, id=quiz_id)
-    
+@handle_object_not_found(Attempt, 'attempt_id')
+def quiz_report(request, attempt_id):
     # Fetch the specific attempt (response) using the attempt_id
-    attempt = get_object_or_404(Attempt, id=attempt_id, quiz=quiz)
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    ai_output = attempt.get_ai_report()
+   
+    context = {
+        'roadmap': ai_output
+    }
     
+    return render(request, "quize/quiz-report.html", context)
+
+
+@handle_object_not_found(Attempt, 'attempt_id')
+def quiz_attempt_detail(request, quiz_id, attempt_id):
+    try:
+        # Fetch the quiz object using the quiz_id
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        
+        # Fetch the specific attempt (response) using the attempt_id
+        attempt = get_object_or_404(Attempt, id=attempt_id, quiz=quiz)
+
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect("quize_list")
+
     # Fetch all the questions and the corresponding answers for the attempt
     questions = quiz.questions.all()
     responses = attempt.responses.all()
     
+
+
     context = {
         'quiz': quiz,
         'attempt': attempt,
@@ -341,3 +405,26 @@ def quiz_attempt_detail(request, quiz_id, attempt_id):
     }
     
     return render(request, 'quize/attempt_detail.html', context)
+
+
+def generate_ai_report(request):
+    attempt_id = request.GET.get('attempt_id')
+    
+    if not attempt_id:
+        return JsonResponse({"result": "Error: attempt_id parameter is required"}, status=400)
+    
+    # Fetch the Attempt object
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    
+    # Generate the AI report (replace with your actual logic)
+    ai_report = attempt.get_ai_report()  # This should return the AI result
+    
+    # Render the template with the data (ai_report or any other context)
+    context = {'roadmap': ai_report}
+    rendered_html = render_to_string('quize/quiz-report.html', context)  # Provide your template's name
+    
+    # Return the rendered HTML in a JSON response
+    return JsonResponse({
+        "result": rendered_html,
+        "performance_analytics": ai_report['performance_analytics']  # Assuming the data is in this key
+    })

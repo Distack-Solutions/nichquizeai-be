@@ -2,6 +2,20 @@ from django.contrib import admin
 from .models import *
 
 
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("key", "title")
+    
+
+@admin.register(AIReport)
+class AIReportAdmin(admin.ModelAdmin):
+    list_display = ("id", "attempt", "total_tokens")
+    
+
+
+
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "created_by", "created_at", "updated_at")
@@ -50,7 +64,3 @@ class ResponseAdmin(admin.ModelAdmin):
 
     display_selected_options.short_description = "Selected Options"
 
-
-@admin.register(AIReport)
-class AIReportAdmin(admin.ModelAdmin):
-    list_display = ("attempt",)
