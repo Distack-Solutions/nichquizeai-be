@@ -287,6 +287,7 @@ class AIRoadmapGenerator:
             for i in range(0, len(ai_roadmap), chunk_size):
                 content = ai_roadmap[i:i + chunk_size]
                 yield content  # Yield each top-level key-value pair as a JSON object
+            
             return  # Stop further execution if the report exists
 
         prompt = self._generate_prompt()

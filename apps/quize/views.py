@@ -462,6 +462,7 @@ def sse_view(request, attempt_id):
     # Create the streaming response
     response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
     response["Cache-Control"] = "no-cache"
+    response["X-Accel-Buffering"] = "no"  # Allow Stream over NGINX server
     return response
 
 
