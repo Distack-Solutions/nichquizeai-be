@@ -472,7 +472,6 @@ def quiz_complete(request, attempt_id):
     context = {
         'attempt_id': attempt_id
     }
-    messages.success(request, "Thanks for submitting the quiz, your Report is being generated.")
     return render(request, "quize/quiz-test.html", context)
 
 
