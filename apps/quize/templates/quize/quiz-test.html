@@ -1,0 +1,364 @@
+{% extends "attempt-base.html" %}
+{% load static %}
+{% block content %}
+
+<div>
+    <div class="container">
+        {% include 'quize/quiz-report-wellness.html' %}
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            class RoadmapRenderer {
+                constructor(data) {
+                    this.data = data;
+                    // Keep track of rendered sections
+                    this.renderedSections = new Set();
+
+                    this.products = [];
+
+                    this.fetchProducts("{% url 'get-products' %}");
+
+                }
+
+                setData(newData) {
+                    this.data = newData;
+                }
+
+                // Function to fetch products and set them in the class
+                fetchProducts(url) {
+                    const self = this; // Reference to the class instance
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            self.products = response.products; // Assuming the response contains a `products` field
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error fetching products:', error);
+                        }
+                    });
+                }
+
+                // Function to render the roadmap title and description
+                renderRoadmapTitle() {
+                    if (this.renderedSections.has('title')) return;
+                    
+                    $('#roadmap-title').text(this.data.title);
+                    $('#description').text(this.data.description);
+                    this.renderedSections.add('title');
+                }
+
+                renderRoadmapDesc() {
+                    if (this.renderedSections.has('description')) return;
+                    $('#description-loader').remove();
+                    $('#description').text(this.data.description);
+                    this.renderedSections.add('description');
+                }
+
+                
+
+                // Function to render longevity score
+                renderLongevityScore() {
+                    if (this.renderedSections.has('longevity_score')) return;
+                    $('#longevity-score-section .shimmer').remove();
+                    $('#longevity-score-status').text(`${this.data.longevity_score.score.value} - ${this.data.longevity_score.status}`);
+                    $('#longevity-description').text(this.data.longevity_score.description);
+
+                    $('#mydoughnutChart').show();
+                    // Get the canvas context
+                    const ctxDoughnut = document.getElementById('mydoughnutChart').getContext('2d');
+
+                    // If a chart already exists, destroy it before creating a new one
+                    if (window.myChart instanceof Chart) {
+                        window.myChart.destroy();
+                    }
+
+                    // Create the new doughnut chart
+                    window.myChart = new Chart(ctxDoughnut, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Achieved', 'Remaining'],
+                            datasets: [{
+                                data: [this.data.longevity_score.score.value, this.data.longevity_score.score.max_value - this.data.longevity_score.score.value],
+                                backgroundColor: ['#A3D9A5', '#e0e0e0'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    });
+
+                    this.renderedSections.add('longevity_score');
+                }
+
+                // Function to render morning routine
+                renderMorningRoutine() {
+                    if (this.renderedSections.has('morning_routine')) return;
+                    $('#morning-routine-title').text(this.data.morning_routine.title);
+                    const stepsContainer = $('#morning-routine-steps');
+                    stepsContainer.empty(); // Clear previous content
+
+                    this.data.morning_routine.steps.forEach(step => {
+                        stepsContainer.append(`
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+                                <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+                                <div>
+                                    <strong>${step.title}:</strong> ${step.description}
+                                </div>
+                            </li>
+                        `);
+                    });
+                    this.renderedSections.add('morning_routine');
+                }
+
+                // Function to render midday strategy
+                renderMiddayStrategy() {
+                    if (this.renderedSections.has('midday_strategy')) return;
+                    $('#midday-strategy-header').text(this.data.midday_strategy.title);
+                    const stepsContainer = $('#midday-strategy-steps');
+                    stepsContainer.empty();
+
+                    this.data.midday_strategy.steps.forEach(step => {
+                        stepsContainer.append(`
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+                                <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+                                <div>
+                                    <strong>${step.title}:</strong> ${step.description}
+                                </div>
+                            </li>
+                        `);
+                    });
+                    this.renderedSections.add('midday_strategy');
+                }
+
+                // Function to render evening habits
+                renderEveningHabits() {
+                    if (this.renderedSections.has('evening_habits')) return;
+                    $('#evening-habits-header').text(this.data.evening_habits.title);
+                    const stepsContainer = $('#evening-habits-steps');
+                    stepsContainer.empty();
+
+                    this.data.evening_habits.steps.forEach(step => {
+                        stepsContainer.append(`
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+                                <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+                                <div>
+                                    <strong>${step.title}:</strong> ${step.description}
+                                </div>
+                            </li>
+                        `);
+                    });
+                    this.renderedSections.add('evening_habits');
+                }
+
+                // Function to render lifestyle tips
+                renderLifestyleTips() {
+                    if (this.renderedSections.has('specific_lifestyle_tips')) return;
+                    $('#lifestyle-tips-header').text(this.data.specific_lifestyle_tips.title);
+                    const stepsContainer = $('#lifestyle-tips-steps');
+                    stepsContainer.empty();
+
+                    this.data.specific_lifestyle_tips.steps.forEach(step => {
+                        stepsContainer.append(`
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+                                <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+                                <div>
+                                    <strong>${step.title}:</strong> ${step.description}
+                                </div>
+                            </li>
+                        `);
+                    });
+                    this.renderedSections.add('specific_lifestyle_tips');
+                }
+
+                // Function to render insights
+                renderInsights() {
+                    if (this.renderedSections.has('insights')) return;
+                    const insightsContainer = $('#insights-list');
+                    insightsContainer.empty();
+
+                    this.data.insights.forEach((insight, index) => {
+                        insightsContainer.append(`
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center" id="insight-${index + 1}">
+                                <i class="material-icons me-2 text-warning">lightbulb</i>
+                                ${insight.insight}
+                            </li>
+                        `);
+                    });
+                    this.renderedSections.add('insights');
+                }
+
+                // Function to render product recommendations
+                renderProductRecommendations() {
+                    if (this.renderedSections.has('product_recommendation')) return;
+                    const productsContainer = $('#product-recommendations-list');
+                    productsContainer.empty();
+
+                    this.data.product_recommendation.forEach((product, index) => {
+
+                        let selected_product = this.products[product.product_key];
+                        
+                        productsContainer.append(`
+                            <div class="card mb-3 shadow radius-lg border border-radius p-3" id="product-${index + 1}">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 mb-3 mb-md-0">
+                                            <img src="${selected_product.thumbnail}" alt="${selected_product.title}" class="img-fluid rounded" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h4 class="mb-4" id="product-title-${index + 1}">${selected_product.title}</h4>
+                                            <h6 class="mb-3 text-secondary">Why This Product Works for You</h6>
+                                            <ul class="list-group" id="product-benefits-${index + 1}">
+                                                ${product.benefits.map(benefit => `
+                                                    <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+                                                        <i class="material-icons me-2 text-primary">check_circle</i>
+                                                        ${benefit}
+                                                    </li>
+                                                `).join('')}
+                                            </ul>
+                                            <h6 class="my-3 text-secondary">How to use</h6>
+                                            <p class="lead" id="product-usage-${index + 1}">${product.usage_instructions}</p>
+                                            <a href="${selected_product.link}" class="btn btn-primary mt-0 fs-5 p-3" target="_blank" id="product-link-${index + 1}">Get Product</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    });
+                    this.renderedSections.add('product_recommendation');
+                }
+
+                // Function to render the encouragement section
+                renderEncouragement() {
+                    if (this.renderedSections.has('encouragement')) return;
+                    $('#encouragement-loader').remove();
+                    $('#encouragement-text').text(this.data.encouragement);
+                    this.renderedSections.add('encouragement');
+                }
+
+                // Render all sections
+                renderAll() {
+                    this.renderRoadmapTitle();
+                    this.renderRoadmapDesc();
+                    this.renderLongevityScore();
+                    this.renderMorningRoutine();
+                    this.renderMiddayStrategy();
+                    this.renderEveningHabits();
+                    this.renderLifestyleTips();
+                    this.renderInsights();
+                    this.renderProductRecommendations();
+                    this.renderEncouragement();
+                }
+
+                // Function to render specific sections dynamically based on the keys in the data
+                renderExisting() {
+                    // List of keys in the data object that correspond to renderable sections
+                    const renderableKeys = Object.keys(this.data);
+
+                    // Loop through each key and check if it exists in the data object
+                    renderableKeys.forEach(key => {
+                        if (this.data[key] && !this.renderedSections.has(key)) {
+                            // Call corresponding render function based on the key
+                            switch (key) {
+                                case 'title':
+                                    this.renderRoadmapTitle();
+                                    break;
+                                case 'description':
+                                    this.renderRoadmapDesc(); // Render title and description
+                                    break;
+                                case 'longevity_score':
+                                    this.renderLongevityScore(); // Render longevity score
+                                    break;
+                                case 'morning_routine':
+                                    this.renderMorningRoutine(); // Render morning routine
+                                    break;
+                                case 'midday_strategy':
+                                    this.renderMiddayStrategy(); // Render midday strategy
+                                    break;
+                                case 'evening_habits':
+                                    this.renderEveningHabits(); // Render evening habits
+                                    break;
+                                case 'specific_lifestyle_tips':
+                                    this.renderLifestyleTips(); // Render lifestyle tips
+                                    break;
+                                case 'insights':
+                                    this.renderInsights(); // Render insights
+                                    break;
+                                case 'product_recommendation':
+                                    this.renderProductRecommendations(); // Render product recommendations
+                                    break;
+                                case 'encouragement':
+                                    this.renderEncouragement(); // Render encouragement
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+
+
+            // Replace with your actual SSE endpoint
+            const eventSource = new EventSource("{% url 'sse-endpoint' attempt_id %}");
+            let all_content = "";
+            var full_parsed_data = {}
+
+            // Initialize renderer
+            const roadmapRenderer = new RoadmapRenderer(full_parsed_data);
+                                
+
+            // Event listener for receiving messages from the server
+            eventSource.onmessage = function (event) {
+                const rawText = event.data;
+                
+                for (const char of rawText) {
+                    if (char == "," || char == "}") {
+                        let new_structured_json = all_content + "}";
+                        try {
+                            // Try to parse the JSON data to check if the root level is complete
+                            full_parsed_data = JSON.parse(new_structured_json);
+                            // If the data is parsed successfully, check that it is a dict (root level object)
+                            if (typeof full_parsed_data === 'object' && full_parsed_data !== null) {
+                                // $("#content").html(new_structured_json);
+                                roadmapRenderer.setData(full_parsed_data);
+                                roadmapRenderer.renderExisting();
+
+
+                            }
+                        } catch (e) {
+                            
+                            // JSON is incomplete
+                        }
+                        
+                    
+                    }
+
+                    all_content += char;
+                }
+
+            };
+
+
+            eventSource.onerror = function () {
+                eventSource.close();
+            };
+        });
+    </script>
+            
+
+</div>
+
+
+{% endblock content %}

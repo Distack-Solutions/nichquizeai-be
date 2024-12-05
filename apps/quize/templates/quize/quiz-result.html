@@ -2,6 +2,8 @@
 {% load static %}
 {% block content %}
 
+
+
 <div class="nk-content-wrap">
     <div class="container text-center">
         <img src="{% static 'assets/images/logo.png' %}" alt="">
@@ -30,10 +32,17 @@
         </div>
     </div>
 
+
+    <div class="container mt-5">
+        {% include 'quize/quiz-report-loader.html' %}
+    </div>
+
     <div class="container mt-5">
         <div id="target-container"></div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -71,7 +80,26 @@
                 $('#target-container').html(response.result);
 
                 // Render charts using the received performance analytics data
-                renderCharts(response.performance_analytics);
+                const ctxDoughnut = document.getElementById('mydoughnutChart').getContext('2d');
+                new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Achieved', 'Remaining'],
+                        datasets: [{
+                            data: [response.longevity_score.score.value, response.longevity_score.score.max_value - response.longevity_score.score.value],
+                            backgroundColor: ['#A3D9A5', '#e0e0e0'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
 
                 // Smooth scroll to target-container
                 document.getElementById('target-container').scrollIntoView({
@@ -86,62 +114,6 @@
                 $('#ai-result').html("<p>Sorry, something went wrong. Please try again later.</p>");
             }
         });
-
-        function renderCharts(performanceAnalytics) {
-            const chartColors = [
-                '#C7B3E5', '#FBBF93', '#A3D9A5', '#6EC1E4', '#B9E6DC',
-                '#F28B82', '#FFF4B5'
-            ];
-
-            performanceAnalytics.forEach((metric, index) => {
-                const ctxDoughnut = document.getElementById('doughnutChart' + (index + 1)).getContext('2d');
-                new Chart(ctxDoughnut, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Achieved', 'Remaining'],
-                        datasets: [{
-                            data: [metric.score.value, metric.score.max_value - metric.score.value],
-                            backgroundColor: [chartColors[index], '#e0e0e0'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top'
-                            }
-                        }
-                    }
-                });
-            });
-
-            // Optionally: Create a performance chart (bar chart)
-            const ctxBar = document.getElementById('performanceChart').getContext('2d');
-            const performanceData = {
-                labels: performanceAnalytics.map(metric => metric.param_name),
-                datasets: [{
-                    label: 'Performance Scores',
-                    data: performanceAnalytics.map(metric => metric.score.value),
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            };
-
-            new Chart(ctxBar, {
-                type: 'bar',
-                data: performanceData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    }
-                }
-            });
-        }
     });
 </script>
 

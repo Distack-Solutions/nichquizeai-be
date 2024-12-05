@@ -40,5 +40,14 @@ urlpatterns = [
 
     path('quiz/<str:quiz_id>/attempt/<str:attempt_id>/', views.quiz_attempt_detail, name='quiz-attempt-detail'),
 
+    path('api/sse-endpoint/<attempt_id>', views.sse_view, name='sse-endpoint'),
+
+    path('quiz/attempt/<str:attempt_id>/complete', views.quiz_complete, name='quiz-complete'),
+
+    path('quiz/test', views.quiz_test, name='quiz-test'),
+
+    path('get-products/', views.get_products, name='get-products'),
+
+
 ]
 

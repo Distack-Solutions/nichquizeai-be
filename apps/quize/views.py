@@ -357,12 +357,14 @@ def submit_quiz(request, quiz_id):
         
 
     # Redirect to a results or success page (you can customize this as needed)
-    return redirect('quiz-results', attempt_id=attempt.id)
+    messages.success(request, "Thanks for submitting the quiz, your Report is being generated.")
+    return redirect('quiz-complete', attempt_id=attempt.id)
 
 
 @handle_object_not_found(Attempt, 'attempt_id')
 def quiz_results(request, attempt_id):
     context = {'attempt_id': attempt_id}
+    return redirect('quiz-complete', attempt_id=attempt_id)
     return render(request, "quize/quiz-result.html", context)
 
 @handle_object_not_found(Attempt, 'attempt_id')
@@ -421,10 +423,76 @@ def generate_ai_report(request):
     
     # Render the template with the data (ai_report or any other context)
     context = {'roadmap': ai_report}
-    rendered_html = render_to_string('quize/quiz-report.html', context)  # Provide your template's name
+    print(context)
+    rendered_html = render_to_string('quize/quiz-report-wellness.html', context)  # Provide your template's name
     
     # Return the rendered HTML in a JSON response
     return JsonResponse({
         "result": rendered_html,
-        "performance_analytics": ai_report['performance_analytics']  # Assuming the data is in this key
+        "longevity_score": ai_report['longevity_score'],
     })
+
+
+
+from django.http import StreamingHttpResponse
+import time
+import json
+
+
+def sse_view(request, attempt_id):
+    """
+    SSE view to stream AI roadmap generation in real-time.
+    """
+    def event_stream():
+        # Instantiate the AI roadmap generator with the attempt ID
+        roadmap_generator = AIRoadmapGenerator(attempt_id=attempt_id)
+        try:
+            # Call the streaming method and yield responses
+            for partial_content in roadmap_generator.generate_ai_response_streaming():
+                # Directly stream the AI content
+                yield f"data: {partial_content}\n\n"
+        except Exception as e:
+            # Handle any errors and send a termination signal
+            error_data = {
+                "type": "error",
+                "message": str(e),
+            }
+            yield f"data: {json.dumps(error_data)}\n\n"
+
+    # Create the streaming response
+    response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+    response["Cache-Control"] = "no-cache"
+    return response
+
+
+@handle_object_not_found(Attempt, 'attempt_id')
+def quiz_complete(request, attempt_id):
+    attempt = get_object_or_404(Attempt, id=attempt_id)
+    context = {
+        'attempt_id': attempt_id
+    }
+    messages.success(request, "Thanks for submitting the quiz, your Report is being generated.")
+    return render(request, "quize/quiz-test.html", context)
+
+
+def quiz_test(request):
+    return render(request, "quize/quiz-test.html")
+
+
+
+def get_products(request):
+    # Query all products from the database
+    products = Product.objects.all()
+
+    # Prepare the JSON response
+    response_data = {
+        product.key: {
+            "title": product.title,
+            "thumbnail": product.thumbnail.url if product.thumbnail else None,
+            "link": product.link,
+        }
+        for product in products
+    }
+
+    # Return the data as a JSON response
+    return JsonResponse({"products": response_data}, safe=False)

@@ -1,0 +1,350 @@
+{% load my_filters %}
+
+<style>
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0; /* Start from the right */
+    }
+    100% {
+      background-position: -100% 0; /* Move to the left */
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, #f6f7f8 25%, #edeef1 50%, #f6f7f8 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1s infinite; /* Adjust speed: 1.5s -> 1s */
+    border-radius: 4px;
+  }
+
+  /* Image placeholder */
+  .shimmer-image {
+    width: 100%;
+    height: 200px; /* Set a default height */
+    border-radius: 8px;
+  }
+
+  /* Text placeholder */
+  .shimmer-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Heading placeholder */
+  .shimmer-heading {
+    height: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust responsive behavior */
+  @media (min-width: 768px) {
+    .shimmer-text {
+      height: 1.5rem;
+    }
+    .shimmer-heading {
+      height: 2.5rem;
+    }
+  }
+
+  .bg-light{
+    background-color: #f9f9f9 !important;
+  }
+</style>
+
+
+<div class="mt-0">
+    <div class="my-4">
+        <h1 class="display-5 mb-5" id="roadmap-title">
+            <p class="lead mt-3 shimmer shimmer-heading" id="title-loader"></p>
+        </h1>
+    
+        <div class="border-primary bg-light mt-4" style="padding: 40px; border-left: solid 6px #878789;">
+            
+            <p class="lead my-0 py-0" id="description">
+                <div id="description-loader">
+                    <p class="lead mt-3 shimmer shimmer-text"></p>
+                    <p class="lead mt-3 shimmer shimmer-text w-50"></p>    
+                </div>
+                {{ roadmap.description }}
+            </p>    
+        </div>
+    </div>
+
+    
+
+    <!-- Longevity Score Section -->
+    <div class="my-5" >
+    
+    
+    </div>
+    
+    
+    <div class="my-5" id="longevity-score-section">
+      <h3 class="mb-3">
+        <i class="material-icons me-2 fs-1">health_and_safety</i>  
+        Longevity Score</h3>
+
+
+        
+
+        <div class="card mb-3 radius-lg p-3 border-0">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <!-- Product Image -->
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="shimmer shimmer-image"></div>
+                        <canvas id="mydoughnutChart" style="display: none;"></canvas>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="col-md-8">
+                        <div>
+                            <div class="shimmer shimmer-heading w-25"></div>
+                            <div>
+                                <div class="shimmer shimmer-text"></div>
+                                <div class="shimmer shimmer-text"></div>
+                                <div class="shimmer shimmer-text w-25"></div>
+                            </div>
+                        </div>
+                        <h4 class="mb-4" id="longevity-score-status">{{roadmap.longevity_score.score.value}} - {{ roadmap.longevity_score.status }}</h4>
+                        <p class="lead" id="longevity-description">{{ roadmap.longevity_score.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-3" id="personalized-wellness-title">
+        <i class="material-icons me-2 fs-1">list</i>  
+        Your Personalized Wellness Roadmap</h2>
+
+    <hr class="mt-5">
+
+    <!-- Morning Routine Section -->
+    <div class="my-5" id="morning-routine-section">
+      <h3 class="mb-3" id="morning-routine-header">
+        <i class="material-icons me-2 fs-1">wb_sunny</i>  
+        Morning Routine: <span id="morning-routine-title">{{ roadmap.morning_routine.title }}</span></h3>
+
+    
+      <ul class="list-group" id="morning-routine-steps">
+        {% for i in 4|get_range %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <div class="w-100 mx-4">
+                <div class="shimmer shimmer-text"></div>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for step in roadmap.morning_routine.steps %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+          <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+          <div>
+            <strong>{{ step.title }}:</strong> {{ step.description }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Midday Strategy Section -->
+    <div class="my-5" id="midday-strategy-section">
+      <h3 class="mb-3">
+        <i class="material-icons me-2 fs-1">sunny</i>  
+        Midday Strategy: <span id="midday-strategy-header">{{ roadmap.midday_strategy.title }}</span>
+    </h3>
+
+
+
+      <ul class="list-group" id="midday-strategy-steps">
+        {% for i in 4|get_range %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <div class="w-100 mx-4">
+                <div class="shimmer shimmer-text"></div>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for step in roadmap.midday_strategy.steps %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+          <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+          <div>
+            <strong>{{ step.title }}:</strong> {{ step.description }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Evening Habits Section -->
+    <div class="my-5" id="evening-habits-section">
+      <h3 class="mb-3">
+        <i class="material-icons me-2 fs-1">nights_stay</i>  
+        Evening Habits: <span  id="evening-habits-header">{{ roadmap.evening_habits.title }}</span></h3>
+
+      <ul class="list-group" id="evening-habits-steps">
+        
+        {% for i in 4|get_range %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <div class="w-100 mx-4">
+                <div class="shimmer shimmer-text"></div>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for step in roadmap.evening_habits.steps %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+          <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+          <div>
+            <strong>{{ step.title }}:</strong> {{ step.description }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Lifestyle Tips Section -->
+    <div class="my-5" id="lifestyle-tips-section">
+      <h3 class="mb-3">
+        <i class="material-icons me-2 fs-1">spa</i>  
+        Specific Lifestyle Tips: <span  id="lifestyle-tips-header">{{ roadmap.specific_lifestyle_tips.title }}</span></h3>
+
+
+
+      <ul class="list-group" id="lifestyle-tips-steps">
+
+        {% for i in 4|get_range %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <div class="w-100 mx-4">
+                <div class="shimmer shimmer-text"></div>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for step in roadmap.specific_lifestyle_tips.steps %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+          <i class="material-icons text-primary me-2">check_box_outline_blank</i>
+          <div>
+            <strong>{{ step.title }}:</strong> {{ step.description }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Insights Section -->
+    <div class="mb-5" id="insights-section">
+      <h3 class="mb-3" id="insights-header">
+        <i class="material-icons me-2 fs-1">verified</i>  
+        Insights</h3>
+
+
+      <ul class="list-group" id="insights-list">
+        {% for i in 4|get_range %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center my-0">
+            <div class="w-100 mx-4">
+                <div class="shimmer shimmer-text"></div>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for insight in roadmap.insights %}
+        <li class="lead list-group-item bg-white border-0 d-flex align-items-center" id="insight-{{ forloop.counter }}">
+          <i class="material-icons me-2 text-warning">lightbulb</i>
+          {{ insight.insight }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Product Recommendations Section -->
+    <div class="mb-5" id="product-recommendations-section">
+      <h3 class="mb-5" id="product-recommendations-title">Product Recommendations</h3>
+      <div id="product-recommendations-list">
+        <div class="card mb-3 shadow radius-lg border border-radius p-3 shimmer-loader" id="product-loader">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <!-- Loader for Product Image -->
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="shimmer shimmer-image" style="width: 100%; height: 200px; border-radius: 8px;"></div>
+                    </div>
+        
+                    <!-- Loader for Product Details -->
+                    <div class="col-md-8">
+                        <!-- Product Title Loader -->
+                        <div class="shimmer shimmer-heading mb-4" style="width: 60%; height: 2rem;"></div>
+        
+                        <!-- "Why This Product Works" Loader -->
+                        <div class="shimmer shimmer-text mb-3" style="width: 50%; height: 1.5rem;"></div>
+                        <ul class="list-group">
+                            {% for i in 3|get_range %}
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+                                <div class="shimmer shimmer-text" style="width: 90%; height: 1rem;"></div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+        
+                        <!-- "How to use" Loader -->
+                        <div class="shimmer shimmer-text my-3" style="width: 40%; height: 1.5rem;"></div>
+                        <p class="shimmer shimmer-text" style="width: 100%; height: 1rem;"></p>
+                        <p class="shimmer shimmer-text" style="width: 90%; height: 1rem;"></p>
+        
+                        <!-- Button Loader -->
+                        <div class="shimmer shimmer-heading mt-0" style="width: 30%; height: 2.5rem; border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        {% for product in roadmap.product_recommendation %}
+        <div class="card mb-3 shadow radius-lg border border-radius p-3" id="product-{{ forloop.counter }}">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <!-- Product Image -->
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <img src="{{ product.product_object.thumbnail }}" alt="{{ product.product_object.title }}" class="img-fluid rounded" />
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="col-md-8">
+                        <h4 class="mb-4" id="product-title-{{ forloop.counter }}">{{ product.product_object.title }}</h4>
+
+                        <h6 class="mb-3 text-secondary">Why This Product Works for You</h6>
+                        <ul class="list-group" id="product-benefits-{{ forloop.counter }}">
+                            {% for benefit in product.benefits %}
+                            <li class="lead list-group-item bg-white border-0 d-flex align-items-center" id="benefit-{{ forloop.counter }}">
+                                <i class="material-icons me-2 text-primary">check_circle</i>
+                                {{ benefit }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <h6 class="my-3 text-secondary">How to use</h6>
+                        <p class="lead" id="product-usage-{{ forloop.counter }}">{{ product.usage_instructions }}</p>
+
+                        <!-- Button for buying the product -->
+                        <a href="{{ product.product_object.link }}" class="btn btn-primary mt-0 fs-5 p-3" target="_blank" id="product-link-{{ forloop.counter }}">Get Product</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- Encouragement Section -->
+    <div class="border-primary bg-light my-4" style="padding: 40px; border-left: solid 6px #878789;" id="encouragement-section">
+        <h3 id="encouragement-title">Encouragement for Your Journey</h3>
+        <div id="encouragement-loader">
+            <p class="lead mt-3 shimmer shimmer-text"></p>
+            <p class="lead mt-3 shimmer shimmer-text w-50"></p>    
+        </div>
+        
+        <p class="lead mt-3" id="encouragement-text">{{ roadmap.encouragement }}</p>    
+    </div>
+
+    <hr class="my-5">
+
+</div>

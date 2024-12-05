@@ -24,6 +24,9 @@ from django.contrib.auth import login, logout
 from django.core.cache import cache
 
 
+
+
+
 @login_required
 def dashboard(request):
     total_quizzes = Quiz.objects.count()
@@ -108,6 +111,7 @@ from apps.quize.models import (
 import json
 
 from libs.openai_response import AnalysisResponse
+
 
 
 def test(request, id):

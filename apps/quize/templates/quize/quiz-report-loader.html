@@ -1,0 +1,178 @@
+{% load my_filters %}
+
+<style>
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0; /* Start from the right */
+    }
+    100% {
+      background-position: -100% 0; /* Move to the left */
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, #f6f7f8 25%, #edeef1 50%, #f6f7f8 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1s infinite; /* Adjust speed: 1.5s -> 1s */
+    border-radius: 4px;
+  }
+
+  /* Image placeholder */
+  .shimmer-image {
+    width: 100%;
+    height: 200px; /* Set a default height */
+    border-radius: 8px;
+  }
+
+  /* Text placeholder */
+  .shimmer-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Heading placeholder */
+  .shimmer-heading {
+    height: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust responsive behavior */
+  @media (min-width: 768px) {
+    .shimmer-text {
+      height: 1.5rem;
+    }
+    .shimmer-heading {
+      height: 2.5rem;
+    }
+  }
+</style>
+
+
+<div class="my-5 py-2">
+  <hr>
+</div>
+
+<div class="mt-5">
+  <!-- Title and Description -->
+  <div class="my-4">
+    <h1 class="display-5 mb-5">Roadmap</h1>
+
+    <div class="border-primary bg-light mt-4" style="padding: 40px; border-left: solid 6px #878789;">
+      <h3 class="shimmer shimmer-text" style="width: 60%;"></h3>
+      <p class="shimmer shimmer-text mt-3" style="width: 80%;"></p>
+      <p class="shimmer shimmer-text" style="width: 75%;"></p>
+    </div>
+  </div>
+
+  <!-- Performance Analytics Section -->
+  <div class="my-5">
+    <h3 class="mb-3">
+      <i class="material-icons me-2 fs-1">query_stats</i>
+      Performance Analytics
+    </h3>
+
+    <div class="row">
+      <!-- Loop of shimmered cards -->
+      {% for i in 4|get_range%}
+      <div class="col-sm-3 mb-4">
+        <div class="card text-left border-0">
+          <div class="card-body">
+            <div class="shimmer shimmer-image"></div>
+
+            <div class="text-center">
+              <h5 class="shimmer shimmer-text mt-3" style="width: 60%;"></h5>
+              <p class="shimmer shimmer-text" style="width: 80%;"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <div class="mb-5">
+    <h3 class="mb-3">
+      <i class="material-icons me-2 fs-1">where_to_vote</i>
+      Your Personalized Wellness Roadmap Checklist
+    </h3>
+
+    <!-- Loop of shimmered sections -->
+    {% for i in 3|get_range %}
+    <div class="card my-5 p-0 border-0">
+      <div class="card-body p-0">
+        <h4 class="shimmer shimmer-text" style="width: 50%;"></h4>
+
+        <ul class="list-group mt-4">
+          {% for j in 3|get_range %}
+          <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+            <i class="material-icons me-2 text-primary">check_box_outline_blank</i>
+            <p class="shimmer shimmer-text" style="width: 90%;"></p>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Insights -->
+  <div class="mb-5">
+    <h3 class="mb-3">
+      <i class="material-icons me-2 fs-1">verified</i>
+      Insights
+    </h3>
+    <ul class="list-group">
+      {% for i in 5|get_range %}
+      <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+        <i class="material-icons me-2 text-warning">lightbulb</i>
+        <p class="shimmer shimmer-text" style="width: 90%;"></p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Product Recommendations -->
+  <div class="mb-5">
+    <h3 class="mb-5">Product Recommendations</h3>
+    {% for i in 3|get_range %}
+    <div class="card mb-3 shadow radius-lg border border-radius p-3">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <!-- Product Image -->
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="shimmer shimmer-image"></div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="col-md-8">
+            <h4 class="shimmer shimmer-text mb-4" style="width: 50%;"></h4>
+
+            <h6 class="mb-3 text-secondary">Why This Product Works for You</h6>
+            <ul class="list-group">
+              {% for j in 3|get_range %}
+              <li class="lead list-group-item bg-white border-0 d-flex align-items-center">
+                <i class="material-icons me-2 text-primary">check_circle</i>
+                <p class="shimmer shimmer-text" style="width: 85%;"></p>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <h6 class="my-3 text-secondary">How to use</h6>
+            <p class="shimmer shimmer-text" style="width: 90%;"></p>
+
+            <!-- Button Placeholder -->
+            <div class="shimmer shimmer-text" style="width: 30%; height: 2rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="border-primary bg-light my-4" style="padding: 40px; border-left: solid 6px #878789;">
+    <h3 class="">Encouragement for Your Journey</h3>
+    <p class="shimmer shimmer-text mt-3" style="width: 80%;"></p>
+    <p class="shimmer shimmer-text" style="width: 70%;"></p>
+  </div>
+</div>
